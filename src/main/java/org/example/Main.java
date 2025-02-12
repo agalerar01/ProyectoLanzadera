@@ -1,7 +1,10 @@
 package org.example;
 
 public class Main {
-    public static void main(String[] args) {
 
+    private static ControlJuego control = ControlJuego.getInstance();
+
+    public static void main(String[] args) {
     }
+
 }
