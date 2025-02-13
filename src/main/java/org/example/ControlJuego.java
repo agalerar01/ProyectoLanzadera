@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.Enums.TipoNave;
 import org.example.Model.Carga;
 import org.example.Model.Lanzadera;
 import org.example.Model.Nave;
@@ -8,6 +9,7 @@ import org.example.Repositorios.*;
 
 import java.util.List;
 
+import static org.example.Enums.TipoNave.*;
 import static org.example.Utils.Utils.pedirInt;
 
 public class ControlJuego {
@@ -47,7 +49,7 @@ public class ControlJuego {
         lanzSelect = lLanzaderas.get(pedirInt()-1);
     }
 
-    public void verQueTodoTaBien(){
+    public void establecerModificador(){
         List<Lanzadera> lLanzaderas =  lanzaderaRepository.recuperarLanzaderas();
         List<Nave> lNaves =  naveRepository.recuperarNaves();
         List<Carga> lCargas =  cargaRepository.recuperarCargas();
@@ -62,7 +64,25 @@ public class ControlJuego {
 
         System.out.println("Naves: ");
         for(int i = 0; i < lNaves.size(); i++){
-            System.out.println((i+1)+". "+lNaves.get(i).getNombre()+"/ Tipo: "+lNaves.get(i).getTipo());
+            switch (lNaves.get(i).getTipo()){
+                case EXPLORACION:
+                    lNaves.get(i).setModificador(0.01);
+                    break;
+
+                case INVESTIGACION:
+                    lNaves.get(i).setModificador(0.02);
+                    break;
+
+                case TRANSBORDADOR:
+                    lNaves.get(i).setModificador(0.03);
+                    break;
+            }
+            System.out.print((i+1)+". "+lNaves.get(i).getNombre()+" / Tipo: "+lNaves.get(i).getTipo()+" / Modificador: "+lNaves.get(i).getModificador());
+            if(lNaves.get(i).getTipo() == INVESTIGACION){
+                System.out.println(" / Dias de investugacion: "+lNaves.get(i).getDiasDuracion());
+            }else{
+                System.out.println();
+            }
         }
 
         System.out.println();
@@ -76,7 +96,7 @@ public class ControlJuego {
 
         System.out.println("Tripulantes: ");
         for(int i = 0; i < lTripulante.size(); i++){
-            System.out.println((i+1)+". "+lTripulante.get(i).getNombre()+"/ Tipo: "+lTripulante.get(i).getTipo());
+            System.out.println((i+1)+". "+lTripulante.get(i).getNombre()+" / Tipo: "+lTripulante.get(i).getTipo());
         }
     }
 }

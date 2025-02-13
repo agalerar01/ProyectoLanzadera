@@ -1,5 +1,6 @@
 package org.example.Model;
 
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 import org.example.Enums.TipoNave;
@@ -17,6 +18,10 @@ public class Nave {
     private Integer Combustible;
     @BsonProperty(value = "oxigeno")
     private Integer Oxigeno;
+    @BsonProperty(value = "dias_duracion_investigacion")
+    private Integer diasDuracion;
+    @BsonIgnore
+    private Double Modificador;
 
     public Nave() {
     }
@@ -67,5 +72,21 @@ public class Nave {
 
     public void setOxigeno(Integer oxigeno) {
         Oxigeno = oxigeno;
+    }
+
+    public Integer getDiasDuracion() {
+        return diasDuracion;
+    }
+
+    public void setDiasDuracion(Integer diasDuracion) {
+        this.diasDuracion = diasDuracion;
+    }
+
+    public Double getModificador() {
+        return Modificador;
+    }
+
+    public void setModificador(Double modificador) {
+        Modificador = modificador;
     }
 }
