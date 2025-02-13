@@ -6,12 +6,11 @@ import org.bson.types.ObjectId;
 public class Carga {
 
     private ObjectId id;
-    @BsonProperty(value = "nombre")
-    private String Nombre;
+    private String nombre;
     @BsonProperty(value = "cantidad_por_tipo")
     private CantidadPorTipo cantidadPorTipo;
     @BsonProperty(value = "peso_por_unidad")
-    private Integer PesoPorUnidad;
+    private Double pesoPorUnidad;
 
     public Carga() {
     }
@@ -25,11 +24,11 @@ public class Carga {
     }
 
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
 
     public void setNombre(String nombre) {
-        Nombre = nombre;
+        this.nombre = nombre;
     }
 
     public CantidadPorTipo getCantidadPorTipo() {
@@ -40,11 +39,11 @@ public class Carga {
         this.cantidadPorTipo = cantidadPorTipo;
     }
 
-    public Integer getPesoPorUnidad() {
-        return PesoPorUnidad;
+    public Double getPesoPorUnidad() {
+        return pesoPorUnidad;
     }
 
-    public void setPesoPorUnidad(Integer pesoPorUnidad) {
-        PesoPorUnidad = pesoPorUnidad;
+    public void setPesoPorUnidad(Double pesoPorUnidad) {
+        this.pesoPorUnidad = pesoPorUnidad;
     }
 }

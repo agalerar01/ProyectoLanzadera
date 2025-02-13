@@ -9,16 +9,12 @@ import java.util.List;
 public class Tripulante {
 
     private ObjectId id;
-    @BsonProperty(value = "nombre")
-    private String Nombre;
-    @BsonProperty(value = "peso")
-    private Double Peso;
-    @BsonProperty(value = "tipo")
-    private TipoTripu Tipo;
-    @BsonProperty(value = "disponible")
-    private boolean Disponible;
+    private String nombre;
+    private Double peso;
+    private TipoTripu tipo;
+    private boolean disponible;
     @BsonProperty(value = "lanzadera_id")
-    private List<ObjectId> LanzaderaIds;
+    private List<ObjectId> lanzaderaIds;
 
     public Tripulante() {
     }
@@ -32,42 +28,42 @@ public class Tripulante {
     }
 
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
 
     public void setNombre(String nombre) {
-        Nombre = nombre;
+        this.nombre = nombre;
     }
 
     public Double getPeso() {
-        return Peso;
+        return peso;
     }
 
     public void setPeso(Double peso) {
-        Peso = peso;
+        this.peso = peso;
     }
 
     public TipoTripu getTipo() {
-        return Tipo;
+        return tipo;
     }
 
     public void setTipo(TipoTripu tipo) {
-        Tipo = tipo;
+        this.tipo = tipo;
     }
 
     public boolean isDisponible() {
-        return Disponible;
+        return disponible;
     }
 
     public void setDisponible(boolean disponible) {
-        Disponible = disponible;
+        this.disponible = disponible;
     }
 
     public List<ObjectId> getLanzaderaIds() {
-        return LanzaderaIds;
+        return lanzaderaIds;
     }
 
     public void setLanzaderaIds(List<ObjectId> lanzaderaIds) {
-        LanzaderaIds = lanzaderaIds;
+        this.lanzaderaIds = lanzaderaIds;
     }
 }

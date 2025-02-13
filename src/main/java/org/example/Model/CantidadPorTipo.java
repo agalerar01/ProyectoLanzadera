@@ -4,37 +4,34 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 
 public class CantidadPorTipo {
 
-    @BsonProperty(value = "exploracion")
-    private Integer Exploracion;
-    @BsonProperty(value = "transbordador")
-    private Integer Transbordador;
-    @BsonProperty(value = "investigacion")
-    private Integer Investigacion;
+    private Integer exploracion;
+    private Integer transbordador;
+    private Integer investigacion;
 
     public CantidadPorTipo() {
     }
 
     public Integer getExploracion() {
-        return Exploracion;
+        return exploracion;
     }
 
     public void setExploracion(Integer exploracion) {
-        Exploracion = exploracion;
+        this.exploracion = exploracion;
     }
 
     public Integer getTransbordador() {
-        return Transbordador;
+        return transbordador;
     }
 
     public void setTransbordador(Integer transbordador) {
-        Transbordador = transbordador;
+        this.transbordador = transbordador;
     }
 
     public Integer getInvestigacion() {
-        return Investigacion;
+        return investigacion;
     }
 
     public void setInvestigacion(Integer investigacion) {
-        Investigacion = investigacion;
+        this.investigacion = investigacion;
     }
 }

@@ -6,16 +6,15 @@ import org.bson.types.ObjectId;
 public class Lanzadera {
 
     private ObjectId id;
-    @BsonProperty(value= "nombre")
-    private String Nombre;
+    private String nombre;
     @BsonProperty(value= "capacidad_maxima_combustible")
-    private Integer CapacidadMaximaCombustible;
+    private Integer capacidadMaximaCombustible;
     @BsonProperty(value = "combustible_disponible")
-    private Integer CombustibleDisponible;
+    private Integer combustibleDisponible;
     @BsonProperty(value= "capacidad_maxima_oxigeno")
-    private Integer CapacidadMaximaOxigeno;
+    private Integer capacidadMaximaOxigeno;
     @BsonProperty(value = "oxigeno_disponible")
-    private Integer OxigenoDisponible;
+    private Integer oxigenoDisponible;
 
     public Lanzadera() {
     }
@@ -29,42 +28,42 @@ public class Lanzadera {
     }
 
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
 
     public void setNombre(String nombre) {
-        Nombre = nombre;
+        this.nombre = nombre;
     }
 
     public Integer getCapacidadMaximaCombustible() {
-        return CapacidadMaximaCombustible;
+        return capacidadMaximaCombustible;
     }
 
     public void setCapacidadMaximaCombustible(Integer capacidadMaximaCombustible) {
-        CapacidadMaximaCombustible = capacidadMaximaCombustible;
+        this.capacidadMaximaCombustible = capacidadMaximaCombustible;
     }
 
     public Integer getCombustibleDisponible() {
-        return CombustibleDisponible;
+        return combustibleDisponible;
     }
 
     public void setCombustibleDisponible(Integer combustibleDisponible) {
-        CombustibleDisponible = combustibleDisponible;
+        this.combustibleDisponible = combustibleDisponible;
     }
 
     public Integer getCapacidadMaximaOxigeno() {
-        return CapacidadMaximaOxigeno;
+        return capacidadMaximaOxigeno;
     }
 
     public void setCapacidadMaximaOxigeno(Integer capacidadMaximaOxigeno) {
-        CapacidadMaximaOxigeno = capacidadMaximaOxigeno;
+        this.capacidadMaximaOxigeno = capacidadMaximaOxigeno;
     }
 
     public Integer getOxigenoDisponible() {
-        return OxigenoDisponible;
+        return oxigenoDisponible;
     }
 
     public void setOxigenoDisponible(Integer oxigenoDisponible) {
-        OxigenoDisponible = oxigenoDisponible;
+        this.oxigenoDisponible = oxigenoDisponible;
     }
 }

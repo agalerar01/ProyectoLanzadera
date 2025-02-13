@@ -8,20 +8,16 @@ import org.example.Enums.TipoNave;
 public class Nave {
 
     private ObjectId id;
-    @BsonProperty(value = "nombre")
-    private String Nombre;
+    private String nombre;
     @BsonProperty(value = "lanzadera_id")
-    private ObjectId LanzaderaId;
-    @BsonProperty(value = "tipo")
-    private TipoNave Tipo;
-    @BsonProperty(value = "combustible")
-    private Integer Combustible;
-    @BsonProperty(value = "oxigeno")
-    private Integer Oxigeno;
+    private ObjectId lanzaderaId;
+    private TipoNave tipo;
+    private Integer combustible;
+    private Integer oxigeno;
     @BsonProperty(value = "dias_duracion_investigacion")
     private Integer diasDuracion;
     @BsonIgnore
-    private Double Modificador;
+    private Double modificador;
 
     public Nave() {
     }
@@ -35,43 +31,43 @@ public class Nave {
     }
 
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
 
     public void setNombre(String nombre) {
-        Nombre = nombre;
+        this.nombre = nombre;
     }
 
     public ObjectId getLanzaderaId() {
-        return LanzaderaId;
+        return lanzaderaId;
     }
 
     public void setLanzaderaId(ObjectId lanzaderaId) {
-        LanzaderaId = lanzaderaId;
+        this.lanzaderaId = lanzaderaId;
     }
 
     public TipoNave getTipo() {
-        return Tipo;
+        return tipo;
     }
 
     public void setTipo(TipoNave tipoNave) {
-        Tipo = tipoNave;
+        tipo = tipoNave;
     }
 
     public Integer getCombustible() {
-        return Combustible;
+        return combustible;
     }
 
     public void setCombustible(Integer combustible) {
-        Combustible = combustible;
+        this.combustible = combustible;
     }
 
     public Integer getOxigeno() {
-        return Oxigeno;
+        return oxigeno;
     }
 
     public void setOxigeno(Integer oxigeno) {
-        Oxigeno = oxigeno;
+        this.oxigeno = oxigeno;
     }
 
     public Integer getDiasDuracion() {
@@ -83,10 +79,10 @@ public class Nave {
     }
 
     public Double getModificador() {
-        return Modificador;
+        return modificador;
     }
 
     public void setModificador(Double modificador) {
-        Modificador = modificador;
+        this.modificador = modificador;
     }
 }
