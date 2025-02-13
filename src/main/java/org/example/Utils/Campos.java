@@ -14,4 +14,5 @@ public class Campos {
     public static final String FECHA="fecha";
     public static final String NAVEID="nave_id";
     public static final String ESTADO="estado";
+    public static final String ID="_id";
 }

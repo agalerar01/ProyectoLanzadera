@@ -8,13 +8,13 @@ public class Lanzadera {
     private ObjectId id;
     private String nombre;
     @BsonProperty(value= "capacidad_maxima_combustible")
-    private Integer capacidadMaximaCombustible;
+    private Double capacidadMaximaCombustible;
     @BsonProperty(value = "combustible_disponible")
-    private Integer combustibleDisponible;
+    private Double combustibleDisponible;
     @BsonProperty(value= "capacidad_maxima_oxigeno")
-    private Integer capacidadMaximaOxigeno;
+    private Double capacidadMaximaOxigeno;
     @BsonProperty(value = "oxigeno_disponible")
-    private Integer oxigenoDisponible;
+    private Double oxigenoDisponible;
 
     public Lanzadera() {
     }
@@ -35,35 +35,35 @@ public class Lanzadera {
         this.nombre = nombre;
     }
 
-    public Integer getCapacidadMaximaCombustible() {
+    public Double getCapacidadMaximaCombustible() {
         return capacidadMaximaCombustible;
     }
 
-    public void setCapacidadMaximaCombustible(Integer capacidadMaximaCombustible) {
+    public void setCapacidadMaximaCombustible(Double capacidadMaximaCombustible) {
         this.capacidadMaximaCombustible = capacidadMaximaCombustible;
     }
 
-    public Integer getCombustibleDisponible() {
+    public Double getCombustibleDisponible() {
         return combustibleDisponible;
     }
 
-    public void setCombustibleDisponible(Integer combustibleDisponible) {
+    public void setCombustibleDisponible(Double combustibleDisponible) {
         this.combustibleDisponible = combustibleDisponible;
     }
 
-    public Integer getCapacidadMaximaOxigeno() {
+    public Double getCapacidadMaximaOxigeno() {
         return capacidadMaximaOxigeno;
     }
 
-    public void setCapacidadMaximaOxigeno(Integer capacidadMaximaOxigeno) {
+    public void setCapacidadMaximaOxigeno(Double capacidadMaximaOxigeno) {
         this.capacidadMaximaOxigeno = capacidadMaximaOxigeno;
     }
 
-    public Integer getOxigenoDisponible() {
+    public Double getOxigenoDisponible() {
         return oxigenoDisponible;
     }
 
-    public void setOxigenoDisponible(Integer oxigenoDisponible) {
+    public void setOxigenoDisponible(Double oxigenoDisponible) {
         this.oxigenoDisponible = oxigenoDisponible;
     }
 }

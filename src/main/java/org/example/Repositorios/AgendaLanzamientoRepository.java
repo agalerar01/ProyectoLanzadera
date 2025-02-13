@@ -34,4 +34,8 @@ public class AgendaLanzamientoRepository {
     public void insertarAgenda(AgendaLanzamientos aG) {
         collection.insertOne(aG);
     }
+
+    public List<AgendaLanzamientos> recuperarPorLanzaderaId(ObjectId lanzId) {
+        return collection.find(eq(Campos.LANZADERAID, lanzId)).into(new ArrayList<>());
+    }
 }

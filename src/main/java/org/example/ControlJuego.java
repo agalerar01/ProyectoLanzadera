@@ -5,6 +5,7 @@ import org.example.Enums.TipoNave;
 import org.example.Model.*;
 import org.example.Repositorios.*;
 
+import javax.swing.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -173,5 +174,21 @@ public class ControlJuego {
 
     public void cerrarSesion(){
         db.closeMongoClient();
+    }
+
+    public void mostrarEstadoLanzadera() {
+        List<AgendaLanzamientos> lAgenda = agendaLanzamientoRepository.recuperarPorLanzaderaId(lanzSelect.getId());
+        System.out.println("Estado de la lanzadera: "+lanzSelect.getNombre());
+        System.out.println("Combustible: "+lanzSelect.getCombustibleDisponible()+" / "+lanzSelect.getCapacidadMaximaCombustible());
+        System.out.println("Oxigeno: "+lanzSelect.getOxigenoDisponible()+" / "+lanzSelect.getCapacidadMaximaOxigeno());
+        System.out.println("Lanzamientos planificados: ");
+        for(int i = 0; i < lAgenda.size(); i++){
+            Nave nave = naveRepository.recuperarNavesPorId(lAgenda.get(i).getNaveId());
+            System.out.println("    Nave: "+nave.getNombre());
+            System.out.println("    Tipo: "+nave.getTipo());
+            System.out.println("    Fecha de lanzamiento: "+lAgenda.get(i).getFecha());
+            System.out.println("    --------------------------------");
+        }
+        System.out.println();
     }
 }

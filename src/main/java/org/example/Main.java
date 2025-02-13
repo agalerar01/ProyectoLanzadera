@@ -32,7 +32,7 @@ public class Main {
                                 System.out.println();
                                 break;
                             case 3:
-
+                                control.mostrarEstadoLanzadera();
                                 break;
                             case 4:
 

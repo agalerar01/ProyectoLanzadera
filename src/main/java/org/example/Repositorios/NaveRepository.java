@@ -30,4 +30,8 @@ public class NaveRepository {
     public List<Nave> recuperarNavesPorLanzadera(ObjectId lanzId) {
         return collection.find(eq(Campos.LANZADERAID, lanzId)).into(new ArrayList<>());
     }
+
+    public Nave recuperarNavesPorId(ObjectId id) {
+        return collection.find(eq(Campos.ID, id)).first();
+    }
 }
