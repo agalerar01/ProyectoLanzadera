@@ -15,6 +15,7 @@ import static org.example.Utils.Utils.pedirInt;
 public class ControlJuego {
 
     private static ControlJuego instance;
+    private ConexionDB db = ConexionDB.getInstance();
     private LanzaderaRepository lanzaderaRepository;
     private AgendaLanzamientoRepository agendaLanzamientoRepository;
     private CargaRepository cargaRepository;
@@ -50,19 +51,8 @@ public class ControlJuego {
     }
 
     public void establecerModificador(){
-        List<Lanzadera> lLanzaderas =  lanzaderaRepository.recuperarLanzaderas();
         List<Nave> lNaves =  naveRepository.recuperarNaves();
-        List<Carga> lCargas =  cargaRepository.recuperarCargas();
-        List<Tripulante> lTripulante =  tripulanteRepository.recuperarTripulantes();
 
-        System.out.println("Lanzaderas: ");
-        for(int i = 0; i < lLanzaderas.size(); i++){
-            System.out.println((i+1)+". "+lLanzaderas.get(i).getNombre());
-        }
-
-        System.out.println();
-
-        System.out.println("Naves: ");
         for(int i = 0; i < lNaves.size(); i++){
             switch (lNaves.get(i).getTipo()){
                 case EXPLORACION:
@@ -77,26 +67,10 @@ public class ControlJuego {
                     lNaves.get(i).setModificador(0.03);
                     break;
             }
-            System.out.print((i+1)+". "+lNaves.get(i).getNombre()+" / Tipo: "+lNaves.get(i).getTipo()+" / Modificador: "+lNaves.get(i).getModificador());
-            if(lNaves.get(i).getTipo() == INVESTIGACION){
-                System.out.println(" / Dias de investugacion: "+lNaves.get(i).getDiasDuracion());
-            }else{
-                System.out.println();
-            }
         }
+    }
 
-        System.out.println();
-
-        System.out.println("Cargas: ");
-        for(int i = 0; i < lCargas.size(); i++){
-            System.out.println((i+1)+". "+lCargas.get(i).getNombre());
-        }
-
-        System.out.println();
-
-        System.out.println("Tripulantes: ");
-        for(int i = 0; i < lTripulante.size(); i++){
-            System.out.println((i+1)+". "+lTripulante.get(i).getNombre()+" / Tipo: "+lTripulante.get(i).getTipo());
-        }
+    public void cerrarSesion(){
+        db.closeMongoClient();
     }
 }
