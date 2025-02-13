@@ -1,5 +1,5 @@
 package org.example.Model;
 
-public enum Tipo {
+public enum TipoNave {
     EXPLORACION, INVESTIGACION, TRANSBORDADOR
 }

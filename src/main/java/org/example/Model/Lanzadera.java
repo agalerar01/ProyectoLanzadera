@@ -6,6 +6,7 @@ import org.bson.types.ObjectId;
 public class Lanzadera {
 
     private ObjectId id;
+    @BsonProperty(value= "nombre")
     private String Nombre;
     @BsonProperty(value= "capacidad_maxima_combustible")
     private Integer CapacidadMaximaCombustible;
