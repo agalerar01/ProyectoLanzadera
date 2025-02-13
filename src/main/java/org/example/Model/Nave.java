@@ -2,6 +2,7 @@ package org.example.Model;
 
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
+import org.example.Enums.TipoNave;
 
 public class Nave {
 

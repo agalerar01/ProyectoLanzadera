@@ -12,4 +12,39 @@ public class Carga {
     private CantidadPorTipo cantidadPorTipo;
     @BsonProperty(value = "peso_por_unidad")
     private Integer PesoPorUnidad;
+
+    public Carga() {
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return Nombre;
+    }
+
+    public void setNombre(String nombre) {
+        Nombre = nombre;
+    }
+
+    public CantidadPorTipo getCantidadPorTipo() {
+        return cantidadPorTipo;
+    }
+
+    public void setCantidadPorTipo(CantidadPorTipo cantidadPorTipo) {
+        this.cantidadPorTipo = cantidadPorTipo;
+    }
+
+    public Integer getPesoPorUnidad() {
+        return PesoPorUnidad;
+    }
+
+    public void setPesoPorUnidad(Integer pesoPorUnidad) {
+        PesoPorUnidad = pesoPorUnidad;
+    }
 }

@@ -1,6 +1,9 @@
 package org.example;
 
+import org.example.Model.Carga;
 import org.example.Model.Lanzadera;
+import org.example.Model.Nave;
+import org.example.Model.Tripulante;
 import org.example.Repositorios.*;
 
 import java.util.List;
@@ -42,5 +45,38 @@ public class ControlJuego {
         }
         System.out.print("Elige una opcion (1-3): ");
         lanzSelect = lLanzaderas.get(pedirInt()-1);
+    }
+
+    public void verQueTodoTaBien(){
+        List<Lanzadera> lLanzaderas =  lanzaderaRepository.recuperarLanzaderas();
+        List<Nave> lNaves =  naveRepository.recuperarNaves();
+        List<Carga> lCargas =  cargaRepository.recuperarCargas();
+        List<Tripulante> lTripulante =  tripulanteRepository.recuperarTripulantes();
+
+        for(int i = 0; i < lLanzaderas.size(); i++){
+            System.out.println("Lanzaderas: ");
+            System.out.println((i+1)+". "+lLanzaderas.get(i).getNombre());
+        }
+
+        System.out.println();
+
+        for(int i = 0; i < lNaves.size(); i++){
+            System.out.println("Naves: ");
+            System.out.println((i+1)+". "+lNaves.get(i).getNombre()+"/ Tipo: "+lNaves.get(i).getTipo());
+        }
+
+        System.out.println();
+
+        for(int i = 0; i < lCargas.size(); i++){
+            System.out.println("Cargas: ");
+            System.out.println((i+1)+". "+lCargas.get(i).getNombre());
+        }
+
+        System.out.println();
+
+        for(int i = 0; i < lTripulante.size(); i++){
+            System.out.println("Tripulantes: ");
+            System.out.println((i+1)+". "+lTripulante.get(i).getNombre()+"/ Tipo: "+lTripulante.get(i).getTipo());
+        }
     }
 }

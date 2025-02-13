@@ -2,6 +2,7 @@ package org.example.Model;
 
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
+import org.example.Enums.Estado;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -57,11 +58,11 @@ public class AgendaLanzamientos {
         NaveId = naveId;
     }
 
-    public org.example.Model.Estado getEstado() {
+    public org.example.Enums.Estado getEstado() {
         return Estado;
     }
 
-    public void setEstado(org.example.Model.Estado estado) {
+    public void setEstado(org.example.Enums.Estado estado) {
         Estado = estado;
     }
 

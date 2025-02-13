@@ -2,6 +2,7 @@ package org.example.Model;
 
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
+import org.example.Enums.TipoTripu;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class Tripulante {
     @BsonProperty(value = "nombre")
     private String Nombre;
     @BsonProperty(value = "peso")
-    private Integer Peso;
+    private Double Peso;
     @BsonProperty(value = "tipo")
     private TipoTripu Tipo;
     @BsonProperty(value = "disponible")
@@ -38,11 +39,11 @@ public class Tripulante {
         Nombre = nombre;
     }
 
-    public Integer getPeso() {
+    public Double getPeso() {
         return Peso;
     }
 
-    public void setPeso(Integer peso) {
+    public void setPeso(Double peso) {
         Peso = peso;
     }
 
