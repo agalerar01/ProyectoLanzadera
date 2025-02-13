@@ -53,29 +53,29 @@ public class ControlJuego {
         List<Carga> lCargas =  cargaRepository.recuperarCargas();
         List<Tripulante> lTripulante =  tripulanteRepository.recuperarTripulantes();
 
+        System.out.println("Lanzaderas: ");
         for(int i = 0; i < lLanzaderas.size(); i++){
-            System.out.println("Lanzaderas: ");
             System.out.println((i+1)+". "+lLanzaderas.get(i).getNombre());
         }
 
         System.out.println();
 
+        System.out.println("Naves: ");
         for(int i = 0; i < lNaves.size(); i++){
-            System.out.println("Naves: ");
             System.out.println((i+1)+". "+lNaves.get(i).getNombre()+"/ Tipo: "+lNaves.get(i).getTipo());
         }
 
         System.out.println();
 
+        System.out.println("Cargas: ");
         for(int i = 0; i < lCargas.size(); i++){
-            System.out.println("Cargas: ");
             System.out.println((i+1)+". "+lCargas.get(i).getNombre());
         }
 
         System.out.println();
 
+        System.out.println("Tripulantes: ");
         for(int i = 0; i < lTripulante.size(); i++){
-            System.out.println("Tripulantes: ");
             System.out.println((i+1)+". "+lTripulante.get(i).getNombre()+"/ Tipo: "+lTripulante.get(i).getTipo());
         }
     }
