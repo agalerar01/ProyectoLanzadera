@@ -21,13 +21,15 @@ public class Main {
 
                     do{
                         opc =  menuLanzadera();
+                        System.out.println();
 
                         switch (opc){
                             case 1:
-
+                                control.planificarLanzamiento();
                                 break;
                             case 2:
-
+                                control.mostrarPersonalDisponible();
+                                System.out.println();
                                 break;
 
                             case 3:

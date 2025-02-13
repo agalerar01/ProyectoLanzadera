@@ -70,6 +70,41 @@ public class ControlJuego {
         }
     }
 
+    public void mostrarPersonalDisponible() {
+        List<Tripulante> lTripulante = tripulanteRepository.recuperarPersonalDisponible(lanzSelect.getId());
+        int droide=0, piloto=0, ingeniero=0, cientifico=0, comandante=0;
+
+        for (int i = 0; i < lTripulante.size(); i++){
+            switch (lTripulante.get(i).getTipo()){
+                case DROIDE:
+                    droide++;
+                    break;
+                case PILOTO:
+                    piloto++;
+                    break;
+                case INGENIERO:
+                    ingeniero++;
+                    break;
+                case CIENTIFICO:
+                    cientifico++;
+                    break;
+                case COMANDANTE:
+                    comandante++;
+                    break;
+            }
+        }
+
+        System.out.println("Personal disponible en la Lanzadera: ");
+        System.out.println("DROIDE: "+droide);
+        System.out.println("COMANDANTE: "+comandante);
+        System.out.println("CIENTIFICO: "+cientifico);
+        System.out.println("INGENIERO: "+ingeniero);
+        System.out.println("PILOTO: "+piloto);
+    }
+
+    public void planificarLanzamiento() {
+    }
+
     public void cerrarSesion(){
         db.closeMongoClient();
     }
