@@ -182,13 +182,68 @@ public class ControlJuego {
         System.out.println("Combustible: "+lanzSelect.getCombustibleDisponible()+" / "+lanzSelect.getCapacidadMaximaCombustible());
         System.out.println("Oxigeno: "+lanzSelect.getOxigenoDisponible()+" / "+lanzSelect.getCapacidadMaximaOxigeno());
         System.out.println("Lanzamientos planificados: ");
-        for(int i = 0; i < lAgenda.size(); i++){
-            Nave nave = naveRepository.recuperarNavesPorId(lAgenda.get(i).getNaveId());
-            System.out.println("    Nave: "+nave.getNombre());
-            System.out.println("    Tipo: "+nave.getTipo());
-            System.out.println("    Fecha de lanzamiento: "+lAgenda.get(i).getFecha());
-            System.out.println("    --------------------------------");
+        if(!lAgenda.isEmpty()) {
+            for (int i = 0; i < lAgenda.size(); i++) {
+                Nave nave = naveRepository.recuperarNavesPorId(lAgenda.get(i).getNaveId());
+                System.out.println("    Nave: " + nave.getNombre());
+                System.out.println("    Tipo: " + nave.getTipo());
+                System.out.println("    Fecha de lanzamiento: " + lAgenda.get(i).getFecha());
+                System.out.println("    --------------------------------");
+            }
+        }else{
+            System.out.println("Aun no se ha planificado ningun lanzamiento");
         }
         System.out.println();
+    }
+
+    public void mostrarEstadoProximoLanzamiento() {
+        AgendaLanzamientos aG = agendaLanzamientoRepository.recuperarPorFechaProxima(lanzSelect.getId(), LocalDate.now());
+        Nave nave = naveRepository.recuperarNavesPorId(aG.getNaveId());
+
+        System.out.println("Nave en lanzadera: ");
+        System.out.println("    Fecha: "+aG.getFecha());
+        System.out.println("    Nave: " + nave.getNombre());
+        System.out.println("    Tipo: " + nave.getTipo());
+        System.out.println("    Combustible: "+nave.getCombustible());
+        System.out.println("    Oxigeno: "+nave.getOxigeno());
+        System.out.println("    Plan de Vuelo: "+calcularPlanVuelo(aG)+" cuadriculas");
+        switch (nave.getTipo()){
+            case EXPLORACION:
+                System.out.println("    Duracion de la mision: "+calcularPlanVuelo(aG)+" dias");
+                break;
+            case INVESTIGACION:
+                System.out.println("    Duracion de la mision: "+(calcularPlanVuelo(aG)*2)+" dias");
+                break;
+            case TRANSBORDADOR:
+                System.out.println("    Duracion de la mision: "+(calcularPlanVuelo(aG)*2)+" dias");
+                break;
+        }
+        if(aG.getTripulacionIds() == null){
+            System.out.println("    No hay tripulacion asignada");
+        }else{
+            if(!aG.getTripulacionIds().isEmpty()) {
+                System.out.println("    Tripulacion Asignada: ");
+                for (int i = 0; i < aG.getTripulacionIds().size(); i++) {
+                    Tripulante t1 = tripulanteRepository.recuperarTripulantesPorId(aG.getTripulacionIds().get(i));
+                    System.out.println("        - " + t1.getNombre() + " (" + t1.getTipo() + ")");
+                }
+            }
+        }
+        System.out.println();
+    }
+
+    public int calcularPlanVuelo(AgendaLanzamientos aG){
+        List<List<String>> cuadricula = aG.getPlanVuelo();
+
+        int cont = 0;
+
+        for(int i = 0; i < cuadricula.size(); i++){
+            for(int j = 0; j < cuadricula.get(i).size(); j++){
+                if(cuadricula.get(i).get(j).equalsIgnoreCase("x")){
+                    cont++;
+                }
+            }
+        }
+        return cont;
     }
 }

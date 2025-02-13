@@ -35,7 +35,7 @@ public class Main {
                                 control.mostrarEstadoLanzadera();
                                 break;
                             case 4:
-
+                                control.mostrarEstadoProximoLanzamiento();
                                 break;
                             case 5:
 

@@ -32,4 +32,8 @@ public class TripulanteRepository {
 
         return collection.find(and(eq(Campos.TRIPULANTE_ESTADO, true),(in(Campos.LANZADERAID, lanzaderaId)))).into(new ArrayList<>());
     }
+
+    public Tripulante recuperarTripulantesPorId(ObjectId id) {
+        return collection.find(eq(Campos.ID, id)).first();
+    }
 }

@@ -2,6 +2,7 @@ package org.example.Repositorios;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.example.Enums.Estado;
 import org.example.Model.AgendaLanzamientos;
@@ -37,5 +38,9 @@ public class AgendaLanzamientoRepository {
 
     public List<AgendaLanzamientos> recuperarPorLanzaderaId(ObjectId lanzId) {
         return collection.find(eq(Campos.LANZADERAID, lanzId)).into(new ArrayList<>());
+    }
+
+    public AgendaLanzamientos recuperarPorFechaProxima(ObjectId lanzId, LocalDate fechaActual) {
+        return collection.find(and(eq(Campos.LANZADERAID, lanzId),gte(Campos.FECHA, fechaActual))).sort(new Document(Campos.FECHA, 1)).first();
     }
 }
