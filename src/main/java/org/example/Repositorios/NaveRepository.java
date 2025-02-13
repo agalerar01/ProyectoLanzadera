@@ -2,12 +2,16 @@ package org.example.Repositorios;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import org.bson.types.ObjectId;
 import org.example.Model.Lanzadera;
 import org.example.Model.Nave;
 import org.example.Utils.Campos;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
 
 public class NaveRepository {
 
@@ -21,5 +25,9 @@ public class NaveRepository {
 
     public List<Nave> recuperarNaves() {
         return collection.find().into(new ArrayList<>());
+    }
+
+    public List<Nave> recuperarNavesPorLanzadera(ObjectId lanzId) {
+        return collection.find(eq(Campos.LANZADERAID, lanzId)).into(new ArrayList<>());
     }
 }

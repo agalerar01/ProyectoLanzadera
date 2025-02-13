@@ -1,16 +1,22 @@
 package org.example;
 
+import org.example.Enums.Estado;
 import org.example.Enums.TipoNave;
-import org.example.Model.Carga;
-import org.example.Model.Lanzadera;
-import org.example.Model.Nave;
-import org.example.Model.Tripulante;
+import org.example.Model.*;
 import org.example.Repositorios.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.example.Enums.TipoNave.*;
+import static org.example.Utils.LanzamientosUtils.generarPlanVuelo;
 import static org.example.Utils.Utils.pedirInt;
+import static org.example.Utils.Utils.pedirString;
 
 public class ControlJuego {
 
@@ -103,6 +109,66 @@ public class ControlJuego {
     }
 
     public void planificarLanzamiento() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        List<Nave> lNaves = naveRepository.recuperarNavesPorLanzadera(lanzSelect.getId());
+        List<Nave> lNavesDisponibles = new ArrayList<>();
+        LocalDate fecha = null;
+        boolean ventanaHabil = true;
+
+        for(int i = 0; i < lNaves.size(); i++){
+            List<AgendaLanzamientos> lAgenda = agendaLanzamientoRepository.recuperarPorNaveYPlanificado(lNaves.get(i).getId(), lanzSelect.getId());
+
+            if(lAgenda.isEmpty()){
+                lNavesDisponibles.add(lNaves.get(i));
+            }
+        }
+
+        System.out.print("Ingrese la fecha del lanzamiento (DD-MM-YYYY): ");
+        String stringFecha = pedirString();
+        System.out.println();
+
+        System.out.println("Naves disponibles para el lanzamiento: ");
+        for(int i = 0; i < lNavesDisponibles.size(); i++){
+            System.out.println((i+1)+". "+lNavesDisponibles.get(i).getNombre()+" ("+lNavesDisponibles.get(i).getTipo()+")");
+        }
+
+        System.out.print("Seleciona una nave: ");
+        Nave naveElegida = lNavesDisponibles.get(pedirInt()-1);
+
+        try {
+            fecha = LocalDate.parse(stringFecha, formatter);
+            ventanaHabil = comprobarVentana(fecha);
+        } catch (DateTimeParseException e) {
+            System.out.println("Error al parsear la fecha: " + e.getMessage());
+        }
+
+        if(ventanaHabil){
+            AgendaLanzamientos aG = new AgendaLanzamientos();
+            aG.setEstado(Estado.PLANIFICADO);
+            aG.setFecha(fecha);
+            aG.setLanzaderaId(lanzSelect.getId());
+            aG.setNaveId(naveElegida.getId());
+            aG.setPlanVuelo(generarPlanVuelo());
+
+            agendaLanzamientoRepository.insertarAgenda(aG);
+            System.out.println("Lanzamiento Agendado");
+            System.out.println();
+        }else{
+            System.out.println("En esta fecha no hay ventana habil");
+            System.out.println();
+        }
+    }
+
+    public boolean comprobarVentana(LocalDate fecha){
+        LocalDate fechaAnterior = fecha.minusDays(8);
+        LocalDate fechaPosterior = fecha.plusDays(8);
+
+        List<AgendaLanzamientos> lAgenda = agendaLanzamientoRepository.recuperarPorVentanaHabil(fechaAnterior, fechaPosterior, lanzSelect.getId());
+
+        if(!lAgenda.isEmpty()){
+            return false;
+        }
+        return true;
     }
 
     public void cerrarSesion(){

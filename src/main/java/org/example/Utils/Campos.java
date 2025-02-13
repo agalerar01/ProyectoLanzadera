@@ -10,5 +10,8 @@ public class Campos {
     public static final String COLECCION_CARGA="cargas";
 
     public static final String TRIPULANTE_ESTADO="disponible";
-    public static final String TRIPULANTE_LANZADERAID="lanzadera_id";
+    public static final String LANZADERAID="lanzadera_id";
+    public static final String FECHA="fecha";
+    public static final String NAVEID="nave_id";
+    public static final String ESTADO="estado";
 }

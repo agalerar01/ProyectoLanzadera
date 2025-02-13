@@ -31,7 +31,6 @@ public class Main {
                                 control.mostrarPersonalDisponible();
                                 System.out.println();
                                 break;
-
                             case 3:
 
                                 break;
@@ -54,11 +53,14 @@ public class Main {
 
                                 break;
                             case 10:
+
+                                break;
+                            case 11:
                                 System.out.println("Volviendo");
                                 System.out.println();
                                 break;
                         }
-                    }while(opc != 10);
+                    }while(opc != 11);
                     break;
                 case 2:
                     System.out.println("Saliendo...");
@@ -84,13 +86,14 @@ public class Main {
         System.out.println("1. Planificar Lanzamiento");
         System.out.println("2. Mostrar Personal Disponible");
         System.out.println("3. Mostrar Estado de la Lanzadera");
-        System.out.println("4. Embarcar Tripulación");
-        System.out.println("5. Cargar Suministros.");
-        System.out.println("6. Cancelar Lanzamiento");
-        System.out.println("7. Posponer Lanzamiento");
-        System.out.println("8. Realizar Lanzamiento");
-        System.out.println("9. Rellenar Tanques Lanzadera");
-        System.out.println("10. Volver");
+        System.out.println("4. Mostrar Estado del Proximo Lanzamiento");
+        System.out.println("5. Embarcar Tripulación");
+        System.out.println("6. Cargar Suministros.");
+        System.out.println("7. Cancelar Lanzamiento");
+        System.out.println("8. Posponer Lanzamiento");
+        System.out.println("9. Realizar Lanzamiento");
+        System.out.println("10. Rellenar Tanques Lanzadera");
+        System.out.println("11. Volver");
 
         System.out.print("Selecciona tu opcion: ");
 

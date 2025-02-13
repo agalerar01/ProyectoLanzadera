@@ -30,6 +30,6 @@ public class TripulanteRepository {
 
     public List<Tripulante> recuperarPersonalDisponible(ObjectId lanzaderaId) {
 
-        return collection.find(and(eq(Campos.TRIPULANTE_ESTADO, true),(in(Campos.TRIPULANTE_LANZADERAID, lanzaderaId)))).into(new ArrayList<>());
+        return collection.find(and(eq(Campos.TRIPULANTE_ESTADO, true),(in(Campos.LANZADERAID, lanzaderaId)))).into(new ArrayList<>());
     }
 }
