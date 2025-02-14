@@ -9,6 +9,8 @@ import org.example.Utils.Campos;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mongodb.client.model.Filters.eq;
+
 public class CargaRepository {
 
     private MongoCollection<Carga> collection;
@@ -21,5 +23,9 @@ public class CargaRepository {
 
     public List<Carga> recuperarCargas() {
         return collection.find().into(new ArrayList<>());
+    }
+
+    public List<Carga> recuperarCargasPorNave() {
+        return collection.find(eq()).into(new ArrayList<>());
     }
 }

@@ -1,5 +1,6 @@
 package org.example;
 
+import org.bson.types.ObjectId;
 import org.example.Enums.Estado;
 import org.example.Enums.TipoNave;
 import org.example.Model.*;
@@ -57,23 +58,23 @@ public class ControlJuego {
         lanzSelect = lLanzaderas.get(pedirInt()-1);
     }
 
-    public void establecerModificador(){
-        List<Nave> lNaves =  naveRepository.recuperarNaves();
+    public void establecerModificador(Nave nave){
 
-        for(int i = 0; i < lNaves.size(); i++){
-            switch (lNaves.get(i).getTipo()){
-                case EXPLORACION:
-                    lNaves.get(i).setModificador(0.01);
-                    break;
+        switch (nave.getTipo()){
+            case EXPLORACION:
+                nave.setModificador(0.01);
+                nave.setCapacidad(3);
+                break;
 
-                case INVESTIGACION:
-                    lNaves.get(i).setModificador(0.02);
-                    break;
+            case INVESTIGACION:
+                nave.setModificador(0.02);
+                nave.setCapacidad(5);
+                break;
 
-                case TRANSBORDADOR:
-                    lNaves.get(i).setModificador(0.03);
-                    break;
-            }
+            case TRANSBORDADOR:
+                nave.setModificador(0.03);
+                nave.setCapacidad(4);
+                break;
         }
     }
 
@@ -245,5 +246,242 @@ public class ControlJuego {
             }
         }
         return cont;
+    }
+
+    public void embarcarTripulacion() {
+        List<Tripulante> lTripulante = tripulanteRepository.recuperarPersonalDisponible(lanzSelect.getId());
+        AgendaLanzamientos aG = agendaLanzamientoRepository.recuperarPorFechaProxima(lanzSelect.getId(), LocalDate.now());
+        Nave nave = naveRepository.recuperarNavesPorId(aG.getNaveId());
+        establecerModificador(nave);
+
+        switch (nave.getTipo()){
+            case TRANSBORDADOR:
+                List<Tripulante> lEmbarcados = rellenarTransbordador(lTripulante);
+                mostrarEmbarcados(nave, lEmbarcados, aG.getId());
+                break;
+            case INVESTIGACION:
+                List<Tripulante> lEmbarcados2 = rellenarInvestigacion(lTripulante);
+                mostrarEmbarcados(nave, lEmbarcados2, aG.getId());
+                break;
+            case EXPLORACION:
+                List<Tripulante> lEmbarcados3 = rellenarExploracion(lTripulante);
+                mostrarEmbarcados(nave, lEmbarcados3, aG.getId());
+                break;
+        }
+        System.out.println();
+    }
+
+    private List<ObjectId> devolverIdsEmbarcados(List<Tripulante> lEmbarcados) {
+        List<ObjectId> lIds = new ArrayList<>();
+
+        for (int i = 0; i < lEmbarcados.size(); i++){
+            lIds.add(lEmbarcados.get(i).getId());
+        }
+
+        return lIds;
+    }
+
+    public List<Tripulante> rellenarTransbordador(List<Tripulante> lTripulante){
+        List<Tripulante> lEmbarcados = new ArrayList<>();
+        Tripulante comand = null, pilo = null, ing1 = null, ing2 = null;
+
+        for(int i = 0; i < lTripulante.size(); i++){
+            switch (lTripulante.get(i).getTipo()){
+                case COMANDANTE:
+                    comand = caseComandante(comand, lTripulante.get(i));
+                    break;
+                case PILOTO:
+                    pilo = casePiloto(pilo, lTripulante.get(i));
+                    break;
+                case INGENIERO:
+                    if(ing1 == null){
+                        ing1 = lTripulante.get(i);
+                    }else{
+                        if(ing2 == null) {
+                            ing2 = lTripulante.get(i);
+                        }else{
+                            if(ing1.getPeso()>lTripulante.get(i).getPeso()){
+                                if(ing2.getPeso()>ing1.getPeso()){
+                                    ing2 = ing1;
+                                }
+                                ing1 = lTripulante.get(i);
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+        if(comand != null){
+            lEmbarcados.add(comand);
+        }
+        if(pilo != null){
+            lEmbarcados.add(pilo);
+        }
+        if(ing1 != null){
+            lEmbarcados.add(ing1);
+        }
+        if(ing2 != null){
+            lEmbarcados.add(ing2);
+        }
+
+        return lEmbarcados;
+    }
+
+    private List<Tripulante> rellenarInvestigacion(List<Tripulante> lTripulante) {
+        List<Tripulante> lEmbarcados = new ArrayList<>();
+        Tripulante comand = null, pilo = null, cient1 = null, cient2 = null, cient3 = null;
+
+        for(int i = 0; i < lTripulante.size(); i++){
+            switch (lTripulante.get(i).getTipo()){
+                case COMANDANTE:
+                    comand = caseComandante(comand, lTripulante.get(i));
+                    break;
+                case PILOTO:
+                    pilo = casePiloto(pilo, lTripulante.get(i));
+                    break;
+                case CIENTIFICO:
+                    if(cient1 == null){
+                        cient1 = lTripulante.get(i);
+                    }else{
+                        if(cient2 == null) {
+                            cient2 = lTripulante.get(i);
+                        }else{
+                            if(cient3 == null){
+                                cient3 = lTripulante.get(i);
+                            }else{
+                                if(cient1.getPeso()>lTripulante.get(i).getPeso()){
+                                    if(cient2.getPeso()>cient1.getPeso()){
+                                        if (cient3.getPeso()>cient2.getPeso()) {
+                                            cient3 = cient2;
+                                        }
+                                        cient2 = cient1;
+                                    } else if(cient3.getPeso()>cient1.getPeso()) {
+                                        cient3 = cient1;
+                                    }
+                                    cient1 = lTripulante.get(i);
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+        if(comand != null){
+            lEmbarcados.add(comand);
+        }
+        if(pilo != null){
+            lEmbarcados.add(pilo);
+        }
+        if(cient1 != null){
+            lEmbarcados.add(cient1);
+        }
+        if(cient2 != null){
+            lEmbarcados.add(cient2);
+        }
+        if(cient3 != null){
+            lEmbarcados.add(cient3);
+        }
+
+        return lEmbarcados;
+    }
+
+    private List<Tripulante> rellenarExploracion(List<Tripulante> lTripulante) {
+        List<Tripulante> lEmbarcados = new ArrayList<>();
+        Tripulante droid1 = null, droid2 = null, droid3 = null;
+
+        for(int i = 0; i < lTripulante.size(); i++){
+            switch (lTripulante.get(i).getTipo()){
+                case DROIDE:
+                    if(droid1 == null){
+                        droid1 = lTripulante.get(i);
+                    }else{
+                        if(droid2 == null) {
+                            droid2 = lTripulante.get(i);
+                        }else{
+                            if(droid3 == null){
+                                droid3 = lTripulante.get(i);
+                            }else{
+                                if(droid1.getPeso()>lTripulante.get(i).getPeso()){
+                                    if(droid2.getPeso()>droid1.getPeso()){
+                                        if (droid3.getPeso()>droid2.getPeso()) {
+                                            droid3 = droid2;
+                                        }
+                                        droid2 = droid1;
+                                    } else if(droid3.getPeso()>droid1.getPeso()) {
+                                        droid3 = droid1;
+                                    }
+                                    droid1 = lTripulante.get(i);
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+        if(droid1 != null){
+            lEmbarcados.add(droid1);
+        }
+        if(droid2 != null){
+            lEmbarcados.add(droid2);
+        }
+        if(droid3 != null){
+            lEmbarcados.add(droid3);
+        }
+
+        return lEmbarcados;
+    }
+
+    public Tripulante caseComandante(Tripulante comand, Tripulante aux){
+        if(comand == null){
+            comand = aux;
+        }else{
+            if(comand.getPeso()>aux.getPeso()){
+                comand = aux;
+            }
+        }
+
+        return comand;
+    }
+
+    public Tripulante casePiloto(Tripulante pilo, Tripulante aux){
+        if(pilo == null){
+            pilo = aux;
+        }else{
+            if(pilo.getPeso()>aux.getPeso()){
+                pilo = aux;
+            }
+        }
+
+        return pilo;
+    }
+
+    public void mostrarEmbarcados(Nave nave, List<Tripulante> lEmbarcados, ObjectId id){
+        if(lEmbarcados.size() != nave.getCapacidad()){
+            System.out.println("No hay personal suficiente");
+        }else {
+            agendaLanzamientoRepository.aniadirTripulacion(id, devolverIdsEmbarcados(lEmbarcados));
+            System.out.println("Tripulacion embarcada en la nave " + nave.getNombre() + " (" + nave.getTipo() + "): ");
+            for (int i = 0; i < lEmbarcados.size(); i++) {
+                System.out.println("        - " + lEmbarcados.get(i).getNombre() + " (" + lEmbarcados.get(i).getTipo() + ")");
+            }
+        }
+    }
+
+    public void cargarSuministros() {
+        AgendaLanzamientos aG = agendaLanzamientoRepository.recuperarPorFechaProxima(lanzSelect.getId(), LocalDate.now());
+        Nave nave = naveRepository.recuperarNavesPorId(aG.getNaveId());
+        int oxigeno = 0, combustible = 0;
+
+        switch (nave.getTipo()){
+            case EXPLORACION:
+                List<Carga> lCarga = cargaRepository.recuperarCargasPorNave();
+                break;
+            case INVESTIGACION:
+
+                break;
+            case TRANSBORDADOR:
+
+                break;
+        }
     }
 }

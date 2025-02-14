@@ -18,6 +18,8 @@ public class Nave {
     private Integer diasDuracion;
     @BsonIgnore
     private Double modificador;
+    @BsonIgnore
+    private Integer capacidad;
 
     public Nave() {
     }
@@ -84,5 +86,13 @@ public class Nave {
 
     public void setModificador(Double modificador) {
         this.modificador = modificador;
+    }
+
+    public Integer getCapacidad() {
+        return capacidad;
+    }
+
+    public void setCapacidad(Integer capacidad) {
+        this.capacidad = capacidad;
     }
 }
