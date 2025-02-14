@@ -12,8 +12,8 @@ public class Nave {
     @BsonProperty(value = "lanzadera_id")
     private ObjectId lanzaderaId;
     private TipoNave tipo;
-    private Integer combustible;
-    private Integer oxigeno;
+    private Double combustible;
+    private Double oxigeno;
     @BsonProperty(value = "dias_duracion_investigacion")
     private Integer diasDuracion;
     @BsonIgnore
@@ -56,19 +56,19 @@ public class Nave {
         tipo = tipoNave;
     }
 
-    public Integer getCombustible() {
+    public Double getCombustible() {
         return combustible;
     }
 
-    public void setCombustible(Integer combustible) {
+    public void setCombustible(Double combustible) {
         this.combustible = combustible;
     }
 
-    public Integer getOxigeno() {
+    public Double getOxigeno() {
         return oxigeno;
     }
 
-    public void setOxigeno(Integer oxigeno) {
+    public void setOxigeno(Double oxigeno) {
         this.oxigeno = oxigeno;
     }
 

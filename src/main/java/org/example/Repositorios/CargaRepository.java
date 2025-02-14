@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.ne;
 
 public class CargaRepository {
 
@@ -25,7 +26,7 @@ public class CargaRepository {
         return collection.find().into(new ArrayList<>());
     }
 
-    public List<Carga> recuperarCargasPorNave() {
-        return collection.find(eq()).into(new ArrayList<>());
+    public List<Carga> recuperarCargasPorNave(String campo) {
+        return collection.find(ne(campo, 0)).into(new ArrayList<>());
     }
 }

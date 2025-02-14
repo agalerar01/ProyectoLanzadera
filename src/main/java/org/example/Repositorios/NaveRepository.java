@@ -2,15 +2,14 @@ package org.example.Repositorios;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Updates;
 import org.bson.types.ObjectId;
-import org.example.Model.Lanzadera;
 import org.example.Model.Nave;
 import org.example.Utils.Campos;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
 public class NaveRepository {
@@ -33,5 +32,13 @@ public class NaveRepository {
 
     public Nave recuperarNavesPorId(ObjectId id) {
         return collection.find(eq(Campos.ID, id)).first();
+    }
+
+    public void updateCombustible(ObjectId id, double combustible) {
+        collection.updateOne(eq(Campos.ID, id), Updates.set(Campos.COMBUSTIBLE, combustible));
+    }
+
+    public void updateOxigeno(ObjectId id, double oxigeno) {
+        collection.updateOne(eq(Campos.ID, id), Updates.set(Campos.OXIGENO, oxigeno));
     }
 }

@@ -16,4 +16,11 @@ public class Campos {
     public static final String ESTADO="estado";
     public static final String ID="_id";
     public static final String TRIPULACION = "tripulacion";
+    public static final String CANTIDADPORTIPOEXPLORACION = "cantidad_por_tipo.exploracion";
+    public static final String CANTIDADPORTIPOTRANSBORDADOR = "cantidad_por_tipo.transbordador";
+    public static final String CANTIDADPORTIPOINVESTIGACION = "cantidad_por_tipo.investigacion";
+    public static final String COMBUSTIBLEDISPONIBLE = "combustible_disponible";
+    public static final String COMBUSTIBLE = "combustible";
+    public static final String OXIGENODISPONIBLE = "oxigeno_disponible";
+    public static final String OXIGENO = "oxigeno";
 }
