@@ -26,7 +26,11 @@ public class AgendaLanzamientoRepository {
     }
 
     public List<AgendaLanzamientos> recuperarPorVentanaHabil(LocalDate fechaAnterio, LocalDate fechaPosterior, ObjectId lanzaderaId) {
-        return collection.find(and(eq(Campos.LANZADERAID, lanzaderaId),gt(Campos.FECHA, fechaAnterio),lt(Campos.FECHA, fechaPosterior))).into(new ArrayList<>());
+        return collection.find(and(eq(Campos.LANZADERAID, lanzaderaId),
+                gt(Campos.FECHA, fechaAnterio),
+                lt(Campos.FECHA, fechaPosterior),
+                eq(Campos.ESTADO, Estado.PLANIFICADO))
+        ).into(new ArrayList<>());
     }
 
     public List<AgendaLanzamientos> recuperarPorNaveYPlanificado(ObjectId naveId, ObjectId lanzaId) {

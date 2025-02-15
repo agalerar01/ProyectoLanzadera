@@ -197,36 +197,40 @@ public class ControlJuego {
 
     public void mostrarEstadoProximoLanzamiento() {
         AgendaLanzamientos aG = agendaLanzamientoRepository.recuperarPorFechaProxima(lanzSelect.getId(), LocalDate.now());
-        Nave nave = naveRepository.recuperarNavesPorId(aG.getNaveId());
+        if(aG != null) {
+            Nave nave = naveRepository.recuperarNavesPorId(aG.getNaveId());
 
-        System.out.println("Nave en lanzadera: ");
-        System.out.println("    Fecha: "+aG.getFecha());
-        System.out.println("    Nave: " + nave.getNombre());
-        System.out.println("    Tipo: " + nave.getTipo());
-        System.out.println("    Combustible: "+nave.getCombustible());
-        System.out.println("    Oxigeno: "+nave.getOxigeno());
-        System.out.println("    Plan de Vuelo: "+calcularPlanVuelo(aG)+" cuadriculas");
-        switch (nave.getTipo()){
-            case EXPLORACION:
-                System.out.println("    Duracion de la mision: "+calcularPlanVuelo(aG)+" dias");
-                break;
-            case INVESTIGACION:
-                System.out.println("    Duracion de la mision: "+(calcularPlanVuelo(aG)*2)+" dias");
-                break;
-            case TRANSBORDADOR:
-                System.out.println("    Duracion de la mision: "+(calcularPlanVuelo(aG)*2)+" dias");
-                break;
-        }
-        if(aG.getTripulacionIds() == null){
-            System.out.println("    No hay tripulacion asignada");
-        }else{
-            if(!aG.getTripulacionIds().isEmpty()) {
-                System.out.println("    Tripulacion Asignada: ");
-                for (int i = 0; i < aG.getTripulacionIds().size(); i++) {
-                    Tripulante t1 = tripulanteRepository.recuperarTripulantesPorId(aG.getTripulacionIds().get(i));
-                    System.out.println("        - " + t1.getNombre() + " (" + t1.getTipo() + ")");
+            System.out.println("Nave en lanzadera: ");
+            System.out.println("    Fecha: " + aG.getFecha());
+            System.out.println("    Nave: " + nave.getNombre());
+            System.out.println("    Tipo: " + nave.getTipo());
+            System.out.println("    Combustible: " + nave.getCombustible());
+            System.out.println("    Oxigeno: " + nave.getOxigeno());
+            System.out.println("    Plan de Vuelo: " + calcularPlanVuelo(aG) + " cuadriculas");
+            switch (nave.getTipo()) {
+                case EXPLORACION:
+                    System.out.println("    Duracion de la mision: " + calcularPlanVuelo(aG) + " dias");
+                    break;
+                case INVESTIGACION:
+                    System.out.println("    Duracion de la mision: " + (calcularPlanVuelo(aG) * 2) + " dias");
+                    break;
+                case TRANSBORDADOR:
+                    System.out.println("    Duracion de la mision: " + (calcularPlanVuelo(aG) * 2) + " dias");
+                    break;
+            }
+            if (aG.getTripulacionIds() == null) {
+                System.out.println("    No hay tripulacion asignada");
+            } else {
+                if (!aG.getTripulacionIds().isEmpty()) {
+                    System.out.println("    Tripulacion Asignada: ");
+                    for (int i = 0; i < aG.getTripulacionIds().size(); i++) {
+                        Tripulante t1 = tripulanteRepository.recuperarTripulantesPorId(aG.getTripulacionIds().get(i));
+                        System.out.println("        - " + t1.getNombre() + " (" + t1.getTipo() + ")");
+                    }
                 }
             }
+        }else{
+            System.out.println("No se han añadido lanzamientos hasta el momento");
         }
         System.out.println();
     }
@@ -577,42 +581,57 @@ public class ControlJuego {
     }
 
     public void cancelarLanzamiento() {
-        AgendaLanzamientos aG = agendaLanzamientoRepository.recuperarPorFechaProxima(lanzSelect.getId(),LocalDate.now());
-        Nave nave = naveRepository.recuperarNavesPorId(aG.getNaveId());
+        AgendaLanzamientos aG = agendaLanzamientoRepository.recuperarPorFechaProxima(lanzSelect.getId(), LocalDate.now());
+        if (aG != null) {
+            Nave nave = naveRepository.recuperarNavesPorId(aG.getNaveId());
 
-        agendaLanzamientoRepository.cambiarEstado(aG.getId(), Estado.CANCELADO);
+            agendaLanzamientoRepository.cambiarEstado(aG.getId(), Estado.CANCELADO);
 
-        for(int i = 0; i < aG.getTripulacionIds().size(); i++){
-            Tripulante t1 = tripulanteRepository.recuperarTripulantesPorId(aG.getTripulacionIds().get(i));
-            tripulanteRepository.actualizarEstado(t1.getId(), true);
-        }
+            if (aG.getTripulacionIds() != null) {
+                for (int i = 0; i < aG.getTripulacionIds().size(); i++) {
+                    Tripulante t1 = tripulanteRepository.recuperarTripulantesPorId(aG.getTripulacionIds().get(i));
+                    tripulanteRepository.actualizarEstado(t1.getId(), true);
+                }
+            }
 
-        agendaLanzamientoRepository.aniadirTripulacion(aG.getId(), null);
+            agendaLanzamientoRepository.aniadirTripulacion(aG.getId(), new ArrayList<>());
 
-        double combustibleSumar = nave.getCombustible()+lanzSelect.getCombustibleDisponible(), oxigenoSumar = nave.getOxigeno()+lanzSelect.getOxigenoDisponible();
+            double combustibleSumar = nave.getCombustible() + lanzSelect.getCombustibleDisponible(), oxigenoSumar = nave.getOxigeno() + lanzSelect.getOxigenoDisponible();
 
-        if(!(combustibleSumar > lanzSelect.getCapacidadMaximaCombustible())){
-            lanzSelect.setCombustibleDisponible(combustibleSumar);
-            lanzaderaRepository.updateCombustible(lanzSelect.getId(), combustibleSumar);
+            if (!(combustibleSumar > lanzSelect.getCapacidadMaximaCombustible())) {
+                lanzSelect.setCombustibleDisponible(combustibleSumar);
+                lanzaderaRepository.updateCombustible(lanzSelect.getId(), combustibleSumar);
+            } else {
+                lanzSelect.setCombustibleDisponible(lanzSelect.getCapacidadMaximaCombustible());
+                lanzaderaRepository.updateCombustible(lanzSelect.getId(), lanzSelect.getCapacidadMaximaCombustible());
+            }
+            naveRepository.updateCombustible(nave.getId(), 0);
+
+            if (!(oxigenoSumar > lanzSelect.getCapacidadMaximaOxigeno())) {
+                lanzSelect.setOxigenoDisponible(oxigenoSumar);
+                lanzaderaRepository.updateOxigeno(lanzSelect.getId(), oxigenoSumar);
+            } else {
+                lanzSelect.setOxigenoDisponible(lanzSelect.getCapacidadMaximaOxigeno());
+                lanzaderaRepository.updateOxigeno(lanzSelect.getId(), lanzSelect.getCapacidadMaximaOxigeno());
+            }
+            naveRepository.updateOxigeno(nave.getId(), 0);
+
+            System.out.println("Lanzamiento cancelado: ");
+            System.out.println("Nave: " + nave.getNombre());
+            System.out.println("Fecha prevista: " + aG.getFecha());
+            System.out.println("Suministros devueltos a la lanzadera.");
+            System.out.println("Tripulacion desembarcada.");
         }else{
-            lanzSelect.setCombustibleDisponible(lanzSelect.getCapacidadMaximaCombustible());
-            lanzaderaRepository.updateCombustible(lanzSelect.getId(), lanzSelect.getCapacidadMaximaCombustible());
+            System.out.println("No hay lanzamientos planificados hasta el momento");
         }
-        naveRepository.updateCombustible(nave.getId(), 0);
+    }
 
-        if(!(oxigenoSumar > lanzSelect.getCapacidadMaximaOxigeno())){
-            lanzSelect.setOxigenoDisponible(oxigenoSumar);
-            lanzaderaRepository.updateOxigeno(lanzSelect.getId(), oxigenoSumar);
+    public void aplazarLanzamiento() {
+        AgendaLanzamientos aG = agendaLanzamientoRepository.recuperarPorFechaProxima(lanzSelect.getId(), LocalDate.now());
+        if (aG != null) {
+
         }else{
-            lanzSelect.setOxigenoDisponible(lanzSelect.getCapacidadMaximaOxigeno());
-            lanzaderaRepository.updateOxigeno(lanzSelect.getId(), lanzSelect.getCapacidadMaximaOxigeno());
+            System.out.println("No hay lanzamientos planificados hasta el momento");
         }
-        naveRepository.updateOxigeno(nave.getId(), 0);
-
-        System.out.println("Lanzamiento cancelado: ");
-        System.out.println("Nave: "+nave.getNombre());
-        System.out.println("Fecha prevista: "+aG.getFecha());
-        System.out.println("Suministros devueltos a la lanzadera.");
-        System.out.println("Tripulacion desembarcada.");
     }
 }
