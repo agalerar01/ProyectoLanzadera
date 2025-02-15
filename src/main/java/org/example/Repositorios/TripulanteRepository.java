@@ -3,6 +3,7 @@ package org.example.Repositorios;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import org.bson.types.ObjectId;
 import org.example.Model.Lanzadera;
 import org.example.Model.Tripulante;
@@ -22,6 +23,10 @@ public class TripulanteRepository {
         MongoDatabase database = ConexionDB.getInstance().recuperarDatabase();
 
         collection = database.getCollection(Campos.COLECCION_TRIPULACION, Tripulante.class);
+    }
+
+    public void actualizarEstado(ObjectId id, boolean b) {
+        collection.updateOne(eq(Campos.ID, id), Updates.set(Campos.DISPONIBLE, b));
     }
 
     public List<Tripulante> recuperarTripulantes() {

@@ -23,4 +23,5 @@ public class Campos {
     public static final String COMBUSTIBLE = "combustible";
     public static final String OXIGENODISPONIBLE = "oxigeno_disponible";
     public static final String OXIGENO = "oxigeno";
+    public static final String DISPONIBLE = "disponible";
 }

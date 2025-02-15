@@ -42,7 +42,7 @@ public class AgendaLanzamientoRepository {
     }
 
     public AgendaLanzamientos recuperarPorFechaProxima(ObjectId lanzId, LocalDate fechaActual) {
-        return collection.find(and(eq(Campos.LANZADERAID, lanzId),gte(Campos.FECHA, fechaActual))).sort(new Document(Campos.FECHA, 1)).first();
+        return collection.find(and(eq(Campos.LANZADERAID, lanzId),gte(Campos.FECHA, fechaActual),eq(Campos.ESTADO, Estado.PLANIFICADO))).sort(new Document(Campos.FECHA, 1)).first();
     }
 
     public void aniadirTripulacion(ObjectId aG, List<ObjectId> lIds) {
@@ -51,5 +51,9 @@ public class AgendaLanzamientoRepository {
 
     public AgendaLanzamientos recuperarPorId(ObjectId id) {
         return collection.find(eq(Campos.ID, id)).first();
+    }
+
+    public void cambiarEstado(ObjectId id, Estado estado) {
+        collection.updateOne(eq(Campos.ID, id), Updates.set(Campos.ESTADO, estado));
     }
 }

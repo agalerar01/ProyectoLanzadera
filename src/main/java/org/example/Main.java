@@ -43,7 +43,7 @@ public class Main {
                                 control.cargarSuministros();
                                 break;
                             case 7:
-
+                                control.cancelarLanzamiento();
                                 break;
                             case 8:
 

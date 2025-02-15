@@ -290,10 +290,10 @@ public class ControlJuego {
         for(int i = 0; i < lTripulante.size(); i++){
             switch (lTripulante.get(i).getTipo()){
                 case COMANDANTE:
-                    comand = caseComandante(comand, lTripulante.get(i));
+                    comand = case1Tripulante(comand, lTripulante.get(i));
                     break;
                 case PILOTO:
-                    pilo = casePiloto(pilo, lTripulante.get(i));
+                    pilo = case1Tripulante(pilo, lTripulante.get(i));
                     break;
                 case INGENIERO:
                     if(ing1 == null){
@@ -336,10 +336,10 @@ public class ControlJuego {
         for(int i = 0; i < lTripulante.size(); i++){
             switch (lTripulante.get(i).getTipo()){
                 case COMANDANTE:
-                    comand = caseComandante(comand, lTripulante.get(i));
+                    comand = case1Tripulante(comand, lTripulante.get(i));
                     break;
                 case PILOTO:
-                    pilo = casePiloto(pilo, lTripulante.get(i));
+                    pilo = case1Tripulante(pilo, lTripulante.get(i));
                     break;
                 case CIENTIFICO:
                     if(cient1 == null){
@@ -433,28 +433,16 @@ public class ControlJuego {
         return lEmbarcados;
     }
 
-    public Tripulante caseComandante(Tripulante comand, Tripulante aux){
-        if(comand == null){
-            comand = aux;
+    public Tripulante case1Tripulante(Tripulante trip, Tripulante aux){
+        if(trip == null){
+            trip = aux;
         }else{
-            if(comand.getPeso()>aux.getPeso()){
-                comand = aux;
+            if(trip.getPeso()>aux.getPeso()){
+                trip = aux;
             }
         }
 
-        return comand;
-    }
-
-    public Tripulante casePiloto(Tripulante pilo, Tripulante aux){
-        if(pilo == null){
-            pilo = aux;
-        }else{
-            if(pilo.getPeso()>aux.getPeso()){
-                pilo = aux;
-            }
-        }
-
-        return pilo;
+        return trip;
     }
 
     public void mostrarEmbarcados(Nave nave, List<Tripulante> lEmbarcados, ObjectId id){
@@ -465,6 +453,7 @@ public class ControlJuego {
             System.out.println("Tripulacion embarcada en la nave " + nave.getNombre() + " (" + nave.getTipo() + "): ");
             for (int i = 0; i < lEmbarcados.size(); i++) {
                 System.out.println("        - " + lEmbarcados.get(i).getNombre() + " (" + lEmbarcados.get(i).getTipo() + ")");
+                tripulanteRepository.actualizarEstado(lEmbarcados.get(i).getId(), false);
             }
         }
     }
@@ -585,5 +574,45 @@ public class ControlJuego {
             lanzaderaRepository.updateCombustible(lanzSelect.getId(), lanzSelect.getCapacidadMaximaCombustible());
         }
         System.out.println();
+    }
+
+    public void cancelarLanzamiento() {
+        AgendaLanzamientos aG = agendaLanzamientoRepository.recuperarPorFechaProxima(lanzSelect.getId(),LocalDate.now());
+        Nave nave = naveRepository.recuperarNavesPorId(aG.getNaveId());
+
+        agendaLanzamientoRepository.cambiarEstado(aG.getId(), Estado.CANCELADO);
+
+        for(int i = 0; i < aG.getTripulacionIds().size(); i++){
+            Tripulante t1 = tripulanteRepository.recuperarTripulantesPorId(aG.getTripulacionIds().get(i));
+            tripulanteRepository.actualizarEstado(t1.getId(), true);
+        }
+
+        agendaLanzamientoRepository.aniadirTripulacion(aG.getId(), null);
+
+        double combustibleSumar = nave.getCombustible()+lanzSelect.getCombustibleDisponible(), oxigenoSumar = nave.getOxigeno()+lanzSelect.getOxigenoDisponible();
+
+        if(!(combustibleSumar > lanzSelect.getCapacidadMaximaCombustible())){
+            lanzSelect.setCombustibleDisponible(combustibleSumar);
+            lanzaderaRepository.updateCombustible(lanzSelect.getId(), combustibleSumar);
+        }else{
+            lanzSelect.setCombustibleDisponible(lanzSelect.getCapacidadMaximaCombustible());
+            lanzaderaRepository.updateCombustible(lanzSelect.getId(), lanzSelect.getCapacidadMaximaCombustible());
+        }
+        naveRepository.updateCombustible(nave.getId(), 0);
+
+        if(!(oxigenoSumar > lanzSelect.getCapacidadMaximaOxigeno())){
+            lanzSelect.setOxigenoDisponible(oxigenoSumar);
+            lanzaderaRepository.updateOxigeno(lanzSelect.getId(), oxigenoSumar);
+        }else{
+            lanzSelect.setOxigenoDisponible(lanzSelect.getCapacidadMaximaOxigeno());
+            lanzaderaRepository.updateOxigeno(lanzSelect.getId(), lanzSelect.getCapacidadMaximaOxigeno());
+        }
+        naveRepository.updateOxigeno(nave.getId(), 0);
+
+        System.out.println("Lanzamiento cancelado: ");
+        System.out.println("Nave: "+nave.getNombre());
+        System.out.println("Fecha prevista: "+aG.getFecha());
+        System.out.println("Suministros devueltos a la lanzadera.");
+        System.out.println("Tripulacion desembarcada.");
     }
 }
