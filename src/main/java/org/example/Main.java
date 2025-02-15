@@ -52,7 +52,7 @@ public class Main {
 
                                 break;
                             case 10:
-
+                                control.cargarSuministrosLanzadera();
                                 break;
                             case 11:
                                 System.out.println("Volviendo");
