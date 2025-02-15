@@ -60,4 +60,12 @@ public class AgendaLanzamientoRepository {
     public void cambiarEstado(ObjectId id, Estado estado) {
         collection.updateOne(eq(Campos.ID, id), Updates.set(Campos.ESTADO, estado));
     }
+
+    public void actualizarFecha(ObjectId id, LocalDate nuevaFecha) {
+        collection.updateOne(eq(Campos.ID, id), Updates.set(Campos.FECHA, nuevaFecha));
+    }
+
+    public List<AgendaLanzamientos> recuperarPorLanzaderaIdYPlanificado(ObjectId id) {
+        return collection.find(and(eq(Campos.LANZADERAID, id),eq(Campos.ESTADO, Estado.PLANIFICADO))).into(new ArrayList<>());
+    }
 }

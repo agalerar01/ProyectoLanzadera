@@ -4,12 +4,14 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Updates;
 import org.bson.types.ObjectId;
+import org.example.Enums.Estado;
 import org.example.Model.Nave;
 import org.example.Utils.Campos;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
 public class NaveRepository {

@@ -46,7 +46,7 @@ public class Main {
                                 control.cancelarLanzamiento();
                                 break;
                             case 8:
-
+                                control.aplazarLanzamiento();
                                 break;
                             case 9:
 
