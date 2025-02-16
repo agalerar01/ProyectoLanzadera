@@ -3,6 +3,7 @@ package org.example;
 import org.bson.types.ObjectId;
 import org.example.Enums.Estado;
 import org.example.Enums.TipoNave;
+import org.example.Ficheros.ControlEscritura;
 import org.example.Model.*;
 import org.example.Repositorios.*;
 import org.example.Utils.Campos;
@@ -21,6 +22,7 @@ import static org.example.Utils.Utils.pedirString;
 public class ControlJuego {
 
     private static ControlJuego instance;
+    private ControlEscritura cEscritura;
     private ConexionDB db = ConexionDB.getInstance();
     private LanzaderaRepository lanzaderaRepository;
     private AgendaLanzamientoRepository agendaLanzamientoRepository;
@@ -30,6 +32,7 @@ public class ControlJuego {
     private Lanzadera lanzSelect;
 
     private ControlJuego(){
+        cEscritura = ControlEscritura.getInstance();
         lanzaderaRepository = new LanzaderaRepository();
         agendaLanzamientoRepository = new AgendaLanzamientoRepository();
         naveRepository = new NaveRepository();
@@ -622,6 +625,7 @@ public class ControlJuego {
 
             devolverOxigeno(oxigenoSumar, nave.getId());
 
+            cEscritura.insertarInfo(lanzSelect.getNombre(), nave.getNombre(), Estado.CANCELADO, aG.getFecha(), 0);
             System.out.println("Lanzamiento cancelado: ");
             System.out.println("Nave: " + nave.getNombre());
             System.out.println("Fecha prevista: " + aG.getFecha());
@@ -636,6 +640,7 @@ public class ControlJuego {
     public void aplazarLanzamiento() {
         AgendaLanzamientos aG = agendaLanzamientoRepository.recuperarPorFechaProxima(lanzSelect.getId(), LocalDate.now());
         LocalDate nuevaFecha;
+        int cont = 0;
         if (aG != null) {
             Nave nave = naveRepository.recuperarNavesPorId(aG.getNaveId());
 
@@ -651,8 +656,10 @@ public class ControlJuego {
 
             do {
                 nuevaFecha = nuevaFecha.plusMonths(1);
+                cont++;
             } while (!comprobarVentana(nuevaFecha));
 
+            cEscritura.insertarInfo(lanzSelect.getNombre(), nave.getNombre(), Estado.APLAZADO, aG.getFecha(), cont);
             System.out.println("Lanzamiento pospuesto: ");
             System.out.println("Nave: " + nave.getNombre());
             System.out.println("Fecha anterio: " + aG.getFecha());
@@ -720,6 +727,7 @@ public class ControlJuego {
                         naveRepository.updateCombustible(nave.getId(), 0);
                         naveRepository.updateOxigeno(nave.getId(), 0);
 
+                        cEscritura.insertarInfo(lanzSelect.getNombre(), nave.getNombre(), Estado.LANZADO, aG.getFecha(), 0);
                         System.out.println("Lanzamiento realizado: ");
                         System.out.println("Fecha de lanzamiento: " + aG.getFecha());
                         System.out.println("nave: "+nave.getNombre());

@@ -4,9 +4,10 @@ import static org.example.Utils.Utils.pedirInt;
 
 public class Main {
 
-    private static ControlJuego control = ControlJuego.getInstance();
+    private static ControlJuego control;
 
     public static void main(String[] args) {
+        control = ControlJuego.getInstance();
         int opcInicial;
 
         do {
