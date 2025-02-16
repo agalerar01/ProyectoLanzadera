@@ -472,26 +472,17 @@ public class ControlJuego {
             if(aG.getTripulacionIds() != null) {
                 switch (nave.getTipo()) {
                     case EXPLORACION:
-                        List<Carga> lCarga = cargaRepository.recuperarCargasPorNave(Campos.CANTIDADPORTIPOEXPLORACION);
-                        for (int i = 0; i < lCarga.size(); i++) {
-                            pesoCarga += lCarga.get(i).getCantidadPorTipo().getExploracion() * lCarga.get(i).getPesoPorUnidad();
-                        }
+                        pesoCarga = calcularPesoCarga(nave);
 
                         cargarSuministros(nave, aG, pesoCarga);
                         break;
                     case INVESTIGACION:
-                        List<Carga> lCarga2 = cargaRepository.recuperarCargasPorNave(Campos.CANTIDADPORTIPOINVESTIGACION);
-                        for (int i = 0; i < lCarga2.size(); i++) {
-                            pesoCarga += lCarga2.get(i).getCantidadPorTipo().getInvestigacion() * lCarga2.get(i).getPesoPorUnidad();
-                        }
+                        pesoCarga = calcularPesoCarga(nave);
 
                         cargarSuministros(nave, aG, pesoCarga);
                         break;
                     case TRANSBORDADOR:
-                        List<Carga> lCarga3 = cargaRepository.recuperarCargasPorNave(Campos.CANTIDADPORTIPOTRANSBORDADOR);
-                        for (int i = 0; i < lCarga3.size(); i++) {
-                            pesoCarga += lCarga3.get(i).getCantidadPorTipo().getTransbordador() * lCarga3.get(i).getPesoPorUnidad();
-                        }
+                        pesoCarga = calcularPesoCarga(nave);
 
                         cargarSuministros(nave, aG, pesoCarga);
                         break;
@@ -503,6 +494,35 @@ public class ControlJuego {
             System.out.println("Aun no se ha planificado un lanzamiento");
         }
         System.out.println();
+    }
+
+    public double calcularPesoCarga(Nave nave){
+        double pesoCarga = 0;
+
+        switch (nave.getTipo()) {
+            case EXPLORACION:
+                List<Carga> lCarga = cargaRepository.recuperarCargasPorNave(Campos.CANTIDADPORTIPOEXPLORACION);
+                for (int i = 0; i < lCarga.size(); i++) {
+                    pesoCarga += lCarga.get(i).getCantidadPorTipo().getExploracion() * lCarga.get(i).getPesoPorUnidad();
+                }
+
+                break;
+            case INVESTIGACION:
+                List<Carga> lCarga2 = cargaRepository.recuperarCargasPorNave(Campos.CANTIDADPORTIPOINVESTIGACION);
+                for (int i = 0; i < lCarga2.size(); i++) {
+                    pesoCarga += lCarga2.get(i).getCantidadPorTipo().getInvestigacion() * lCarga2.get(i).getPesoPorUnidad();
+                }
+
+                break;
+            case TRANSBORDADOR:
+                List<Carga> lCarga3 = cargaRepository.recuperarCargasPorNave(Campos.CANTIDADPORTIPOTRANSBORDADOR);
+                for (int i = 0; i < lCarga3.size(); i++) {
+                    pesoCarga += lCarga3.get(i).getCantidadPorTipo().getTransbordador() * lCarga3.get(i).getPesoPorUnidad();
+                }
+
+                break;
+        }
+        return pesoCarga;
     }
 
     private double calcularPesoTripu(AgendaLanzamientos aG) {
@@ -518,47 +538,54 @@ public class ControlJuego {
 
     public void cargarSuministros(Nave nave, AgendaLanzamientos aG, double pesoCarga){
         double oxigeno = 0, combustible = 0, pesoTripu = 0;
+        boolean exploracion = false;
 
-        if(nave.getTipo() != TipoNave.EXPLORACION) {
+        if(nave.getTipo() == TipoNave.EXPLORACION){
+            exploracion = true;
+        }
 
-            pesoTripu = calcularPesoTripu(aG);
+        pesoTripu = calcularPesoTripu(aG);
 
-            combustible = (pesoCarga + pesoTripu) * nave.getModificador() * (calcularPlanVuelo(aG) * 2);
+        combustible = calcularCombustible(nave, pesoCarga, pesoTripu, aG);
 
-            oxigeno = aG.getTripulacionIds().size() * (calcularPlanVuelo(aG) * 2) * 3;
+        if(exploracion){
+            oxigeno = 0;
+        }else {
+            oxigeno = calcularOxigeno(aG);
+        }
 
-            if (lanzSelect.getCombustibleDisponible() > combustible && lanzSelect.getOxigenoDisponible() > oxigeno) {
-                nave.setCombustible(combustible);
-                naveRepository.updateCombustible(nave.getId(), combustible);
+        if (lanzSelect.getCombustibleDisponible() > combustible && lanzSelect.getOxigenoDisponible() > oxigeno) {
+            nave.setCombustible(combustible);
+            naveRepository.updateCombustible(nave.getId(), combustible);
 
-                lanzSelect.setCombustibleDisponible(lanzSelect.getCombustibleDisponible() - combustible);
-                lanzaderaRepository.updateCombustible(lanzSelect.getId(), lanzSelect.getCombustibleDisponible());
+            lanzSelect.setCombustibleDisponible(lanzSelect.getCombustibleDisponible() - combustible);
+            lanzaderaRepository.updateCombustible(lanzSelect.getId(), lanzSelect.getCombustibleDisponible());
 
-                nave.setOxigeno(oxigeno);
-                naveRepository.updateOxigeno(nave.getId(), oxigeno);
+            nave.setOxigeno(oxigeno);
+            naveRepository.updateOxigeno(nave.getId(), oxigeno);
 
-                lanzSelect.setOxigenoDisponible(lanzSelect.getOxigenoDisponible() - oxigeno);
-                lanzaderaRepository.updateOxigeno(lanzSelect.getId(), lanzSelect.getOxigenoDisponible());
-                System.out.println("Los suministros han sido cargados con exito");
-            } else {
+            lanzSelect.setOxigenoDisponible(lanzSelect.getOxigenoDisponible() - oxigeno);
+            lanzaderaRepository.updateOxigeno(lanzSelect.getId(), lanzSelect.getOxigenoDisponible());
+            System.out.println("Los suministros han sido cargados con exito");
+        } else {
+            if(exploracion){
+                System.out.println("No hay suficiente combustible en la lanzadera");
+            }else {
                 System.out.println("No hay suficiente combustible u oxigeno en la lanzadera");
             }
-        }else{
-            pesoTripu = calcularPesoTripu(aG);
-
-            combustible = (pesoCarga+pesoTripu)*nave.getModificador()*calcularPlanVuelo(aG);
-
-            if(lanzSelect.getCombustibleDisponible()>combustible){
-                nave.setCombustible(combustible);
-                naveRepository.updateCombustible(nave.getId(), combustible);
-
-                lanzSelect.setCombustibleDisponible(lanzSelect.getCombustibleDisponible()-combustible);
-                lanzaderaRepository.updateCombustible(lanzSelect.getId(), lanzSelect.getCombustibleDisponible());
-                System.out.println("Los suministros han sido cargados con exito");
-            }else{
-                System.out.println("No hay suficiente combustible en la lanzadera");
-            }
         }
+    }
+
+    public double calcularCombustible(Nave nave, double pesoCarga, double pesoTripu, AgendaLanzamientos aG){
+        if(nave.getTipo() == TipoNave.EXPLORACION) {
+            return (pesoCarga + pesoTripu) * nave.getModificador() * (calcularPlanVuelo(aG));
+        }else{
+            return (pesoCarga + pesoTripu) * nave.getModificador() * (calcularPlanVuelo(aG) * 2);
+        }
+    }
+
+    public double calcularOxigeno(AgendaLanzamientos aG){
+        return aG.getTripulacionIds().size() * (calcularPlanVuelo(aG) * 2) * 3;
     }
 
     public void cargarSuministrosLanzadera() {
@@ -574,7 +601,7 @@ public class ControlJuego {
             System.out.println("El combustible se encuentra cargado");
         }else{
             System.out.println("Se ha recargado "+(lanzSelect.getCapacidadMaximaCombustible()-lanzSelect.getCombustibleDisponible())+" de combustible");
-            lanzSelect.setCombustibleDisponible(lanzSelect.getCombustibleDisponible());
+            lanzSelect.setCombustibleDisponible(lanzSelect.getCapacidadMaximaCombustible());
             lanzaderaRepository.updateCombustible(lanzSelect.getId(), lanzSelect.getCapacidadMaximaCombustible());
         }
         System.out.println();
@@ -677,5 +704,56 @@ public class ControlJuego {
             }
         }
         agendaLanzamientoRepository.aniadirTripulacion(id, new ArrayList<>());
+    }
+
+    public void realizarLanzamiento() {
+        AgendaLanzamientos aG = agendaLanzamientoRepository.recuperarPorFechaProxima(lanzSelect.getId(), LocalDate.now());
+        double pesoCargar, pesoTripu, combustible, oxigeno;
+        if(aG != null){
+            Nave nave = naveRepository.recuperarNavesPorId(aG.getNaveId());
+            establecerModificador(nave);
+
+            if(aG.getTripulacionIds() != null){
+                if(nave.getCombustible() > 0 && nave.getOxigeno() > 0){
+                    if (Objects.equals(aG.getFecha(), LocalDate.now())) {
+                        agendaLanzamientoRepository.cambiarEstado(aG.getId(), Estado.LANZADO);
+                        naveRepository.updateCombustible(nave.getId(), 0);
+                        naveRepository.updateOxigeno(nave.getId(), 0);
+
+                        System.out.println("Lanzamiento realizado: ");
+                        System.out.println("Fecha de lanzamiento: " + aG.getFecha());
+                        System.out.println("nave: "+nave.getNombre());
+                        System.out.println("Tipo: "+nave.getTipo());
+                        System.out.println("Tripulacion: "+aG.getTripulacionIds().size()+" miembros");
+                        System.out.println("Combustible: "+nave.getCombustible());
+                        System.out.println("Oxigeno: "+nave.getOxigeno());
+
+                        desembarcarTripulacion(aG.getTripulacionIds(), aG.getId());
+                    }else{
+                        System.out.println("No se puede lanzar la nave "+nave.getNombre());
+                        System.out.println("No es el dia previsto del lanzamiento ("+aG.getFecha()+")");
+                    }
+                }else{
+                    pesoCargar = calcularPesoCarga(nave);
+                    pesoTripu = calcularPesoTripu(aG);
+                    combustible = calcularCombustible(nave, pesoCargar, pesoTripu, aG);
+
+                    if(nave.getTipo() == TipoNave.EXPLORACION){
+                        oxigeno = 0;
+                    }else{
+                        oxigeno = calcularOxigeno(aG);
+                    }
+
+                    System.out.println("No se puede lanzar la nave "+nave.getNombre()+ " porque no tiene suficientes suministros");
+                    System.out.println("Combustible: "+nave.getCombustible()+" / "+combustible);
+                    System.out.println("Oxigeno: "+nave.getOxigeno()+" / "+oxigeno);
+                }
+            }else{
+                System.out.println("No se puede lanzar la nave "+nave.getNombre()+ " porque no hay tripulacion");
+            }
+        }else{
+            System.out.println("No hay lanzamientos previstos hasta le fecha");
+        }
+        System.out.println();
     }
 }

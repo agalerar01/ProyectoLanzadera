@@ -49,7 +49,7 @@ public class Main {
                                 control.aplazarLanzamiento();
                                 break;
                             case 9:
-
+                                control.realizarLanzamiento();
                                 break;
                             case 10:
                                 control.cargarSuministrosLanzadera();
