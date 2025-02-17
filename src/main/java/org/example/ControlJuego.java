@@ -31,7 +31,7 @@ public class ControlJuego {
     private TripulanteRepository tripulanteRepository;
     private Lanzadera lanzSelect;
 
-    private ControlJuego(){
+    private ControlJuego() {
         cEscritura = ControlEscritura.getInstance();
         lanzaderaRepository = new LanzaderaRepository();
         agendaLanzamientoRepository = new AgendaLanzamientoRepository();
@@ -40,28 +40,28 @@ public class ControlJuego {
         tripulanteRepository = new TripulanteRepository();
     }
 
-    public static ControlJuego getInstance(){
-        if(instance == null){
+    public static ControlJuego getInstance() {
+        if (instance == null) {
             instance = new ControlJuego();
         }
 
         return instance;
     }
 
-    public void seleccionarLanzadera(){
-        List<Lanzadera> lLanzaderas =  lanzaderaRepository.recuperarLanzaderas();
+    public void seleccionarLanzadera() {
+        List<Lanzadera> lLanzaderas = lanzaderaRepository.recuperarLanzaderas();
 
         System.out.println("Seleciona una lanzadera disponible: ");
-        for(int i = 0; i < lLanzaderas.size(); i++){
-            System.out.println((i+1)+". "+lLanzaderas.get(i).getNombre());
+        for (int i = 0; i < lLanzaderas.size(); i++) {
+            System.out.println((i + 1) + ". " + lLanzaderas.get(i).getNombre());
         }
         System.out.print("Elige una opcion (1-3): ");
-        lanzSelect = lLanzaderas.get(pedirInt()-1);
+        lanzSelect = lLanzaderas.get(pedirInt() - 1);
     }
 
-    public void establecerModificador(Nave nave){
+    public void establecerModificador(Nave nave) {
 
-        switch (nave.getTipo()){
+        switch (nave.getTipo()) {
             case EXPLORACION:
                 nave.setModificador(0.01);
                 nave.setCapacidad(3);
@@ -81,10 +81,10 @@ public class ControlJuego {
 
     public void mostrarPersonalDisponible() {
         List<Tripulante> lTripulante = tripulanteRepository.recuperarPersonalDisponible(lanzSelect.getId());
-        int droide=0, piloto=0, ingeniero=0, cientifico=0, comandante=0;
+        int droide = 0, piloto = 0, ingeniero = 0, cientifico = 0, comandante = 0;
 
-        for (int i = 0; i < lTripulante.size(); i++){
-            switch (lTripulante.get(i).getTipo()){
+        for (int i = 0; i < lTripulante.size(); i++) {
+            switch (lTripulante.get(i).getTipo()) {
                 case DROIDE:
                     droide++;
                     break;
@@ -104,11 +104,11 @@ public class ControlJuego {
         }
 
         System.out.println("Personal disponible en la Lanzadera: ");
-        System.out.println("DROIDE: "+droide);
-        System.out.println("COMANDANTE: "+comandante);
-        System.out.println("CIENTIFICO: "+cientifico);
-        System.out.println("INGENIERO: "+ingeniero);
-        System.out.println("PILOTO: "+piloto);
+        System.out.println("DROIDE: " + droide);
+        System.out.println("COMANDANTE: " + comandante);
+        System.out.println("CIENTIFICO: " + cientifico);
+        System.out.println("INGENIERO: " + ingeniero);
+        System.out.println("PILOTO: " + piloto);
     }
 
     public void planificarLanzamiento() {
@@ -118,10 +118,10 @@ public class ControlJuego {
         LocalDate fecha = null;
         boolean ventanaHabil = true;
 
-        for(int i = 0; i < lNaves.size(); i++){
+        for (int i = 0; i < lNaves.size(); i++) {
             List<AgendaLanzamientos> lAgenda = agendaLanzamientoRepository.recuperarPorNaveYPlanificado(lNaves.get(i).getId(), lanzSelect.getId());
 
-            if(lAgenda.isEmpty()){
+            if (lAgenda.isEmpty()) {
                 lNavesDisponibles.add(lNaves.get(i));
             }
         }
@@ -131,12 +131,12 @@ public class ControlJuego {
         System.out.println();
 
         System.out.println("Naves disponibles para el lanzamiento: ");
-        for(int i = 0; i < lNavesDisponibles.size(); i++){
-            System.out.println((i+1)+". "+lNavesDisponibles.get(i).getNombre()+" ("+lNavesDisponibles.get(i).getTipo()+")");
+        for (int i = 0; i < lNavesDisponibles.size(); i++) {
+            System.out.println((i + 1) + ". " + lNavesDisponibles.get(i).getNombre() + " (" + lNavesDisponibles.get(i).getTipo() + ")");
         }
 
         System.out.print("Seleciona una nave: ");
-        Nave naveElegida = lNavesDisponibles.get(pedirInt()-1);
+        Nave naveElegida = lNavesDisponibles.get(pedirInt() - 1);
 
         try {
             fecha = LocalDate.parse(stringFecha, formatter);
@@ -145,7 +145,7 @@ public class ControlJuego {
             System.out.println("Error al parsear la fecha: " + e.getMessage());
         }
 
-        if(ventanaHabil){
+        if (ventanaHabil) {
             AgendaLanzamientos aG = new AgendaLanzamientos();
             aG.setEstado(Estado.PLANIFICADO);
             aG.setFecha(fecha);
@@ -156,35 +156,35 @@ public class ControlJuego {
             agendaLanzamientoRepository.insertarAgenda(aG);
             System.out.println("Lanzamiento Agendado");
             System.out.println();
-        }else{
+        } else {
             System.out.println("En esta fecha no hay ventana habil");
             System.out.println();
         }
     }
 
-    public boolean comprobarVentana(LocalDate fecha){
+    public boolean comprobarVentana(LocalDate fecha) {
         LocalDate fechaAnterior = fecha.minusDays(8);
         LocalDate fechaPosterior = fecha.plusDays(8);
 
         List<AgendaLanzamientos> lAgenda = agendaLanzamientoRepository.recuperarPorVentanaHabil(fechaAnterior, fechaPosterior, lanzSelect.getId());
 
-        if(!lAgenda.isEmpty()){
+        if (!lAgenda.isEmpty()) {
             return false;
         }
         return true;
     }
 
-    public void cerrarSesion(){
+    public void cerrarSesion() {
         db.closeMongoClient();
     }
 
     public void mostrarEstadoLanzadera() {
         List<AgendaLanzamientos> lAgenda = agendaLanzamientoRepository.recuperarPorLanzaderaIdYPlanificado(lanzSelect.getId());
-        System.out.println("Estado de la lanzadera: "+lanzSelect.getNombre());
-        System.out.println("Combustible: "+lanzSelect.getCombustibleDisponible()+" / "+lanzSelect.getCapacidadMaximaCombustible());
-        System.out.println("Oxigeno: "+lanzSelect.getOxigenoDisponible()+" / "+lanzSelect.getCapacidadMaximaOxigeno());
+        System.out.println("Estado de la lanzadera: " + lanzSelect.getNombre());
+        System.out.println("Combustible: " + lanzSelect.getCombustibleDisponible() + " / " + lanzSelect.getCapacidadMaximaCombustible());
+        System.out.println("Oxigeno: " + lanzSelect.getOxigenoDisponible() + " / " + lanzSelect.getCapacidadMaximaOxigeno());
         System.out.println("Lanzamientos planificados: ");
-        if(!lAgenda.isEmpty()) {
+        if (!lAgenda.isEmpty()) {
             for (int i = 0; i < lAgenda.size(); i++) {
                 Nave nave = naveRepository.recuperarNavesPorId(lAgenda.get(i).getNaveId());
                 System.out.println("    Nave: " + nave.getNombre());
@@ -192,7 +192,7 @@ public class ControlJuego {
                 System.out.println("    Fecha de lanzamiento: " + lAgenda.get(i).getFecha());
                 System.out.println("    --------------------------------");
             }
-        }else{
+        } else {
             System.out.println("Aun no se ha planificado ningun lanzamiento");
         }
         System.out.println();
@@ -200,7 +200,7 @@ public class ControlJuego {
 
     public void mostrarEstadoProximoLanzamiento() {
         AgendaLanzamientos aG = agendaLanzamientoRepository.recuperarPorFechaProxima(lanzSelect.getId(), LocalDate.now());
-        if(aG != null) {
+        if (aG != null) {
             Nave nave = naveRepository.recuperarNavesPorId(aG.getNaveId());
 
             System.out.println("Nave en lanzadera: ");
@@ -232,20 +232,20 @@ public class ControlJuego {
                     }
                 }
             }
-        }else{
+        } else {
             System.out.println("No se han añadido lanzamientos hasta el momento");
         }
         System.out.println();
     }
 
-    public int calcularPlanVuelo(AgendaLanzamientos aG){
+    public int calcularPlanVuelo(AgendaLanzamientos aG) {
         List<List<String>> cuadricula = aG.getPlanVuelo();
 
         int cont = 0;
 
-        for(int i = 0; i < cuadricula.size(); i++){
-            for(int j = 0; j < cuadricula.get(i).size(); j++){
-                if(cuadricula.get(i).get(j).equalsIgnoreCase("x")){
+        for (int i = 0; i < cuadricula.size(); i++) {
+            for (int j = 0; j < cuadricula.get(i).size(); j++) {
+                if (cuadricula.get(i).get(j).equalsIgnoreCase("x")) {
                     cont++;
                 }
             }
@@ -259,7 +259,7 @@ public class ControlJuego {
         Nave nave = naveRepository.recuperarNavesPorId(aG.getNaveId());
         establecerModificador(nave);
 
-        if(aG != null) {
+        if (aG != null) {
             switch (nave.getTipo()) {
                 case TRANSBORDADOR:
                     List<Tripulante> lEmbarcados = rellenarTransbordador(lTripulante);
@@ -274,7 +274,7 @@ public class ControlJuego {
                     mostrarEmbarcados(nave, lEmbarcados3, aG.getId());
                     break;
             }
-        }else{
+        } else {
             System.out.println("Aun no se ha planificado un lanzamiento");
         }
         System.out.println();
@@ -283,19 +283,19 @@ public class ControlJuego {
     private List<ObjectId> devolverIdsEmbarcados(List<Tripulante> lEmbarcados) {
         List<ObjectId> lIds = new ArrayList<>();
 
-        for (int i = 0; i < lEmbarcados.size(); i++){
+        for (int i = 0; i < lEmbarcados.size(); i++) {
             lIds.add(lEmbarcados.get(i).getId());
         }
 
         return lIds;
     }
 
-    public List<Tripulante> rellenarTransbordador(List<Tripulante> lTripulante){
+    public List<Tripulante> rellenarTransbordador(List<Tripulante> lTripulante) {
         List<Tripulante> lEmbarcados = new ArrayList<>();
         Tripulante comand = null, pilo = null, ing1 = null, ing2 = null;
 
-        for(int i = 0; i < lTripulante.size(); i++){
-            switch (lTripulante.get(i).getTipo()){
+        for (int i = 0; i < lTripulante.size(); i++) {
+            switch (lTripulante.get(i).getTipo()) {
                 case COMANDANTE:
                     comand = case1Tripulante(comand, lTripulante.get(i));
                     break;
@@ -303,14 +303,14 @@ public class ControlJuego {
                     pilo = case1Tripulante(pilo, lTripulante.get(i));
                     break;
                 case INGENIERO:
-                    if(ing1 == null){
+                    if (ing1 == null) {
                         ing1 = lTripulante.get(i);
-                    }else{
-                        if(ing2 == null) {
+                    } else {
+                        if (ing2 == null) {
                             ing2 = lTripulante.get(i);
-                        }else{
-                            if(ing1.getPeso()>lTripulante.get(i).getPeso()){
-                                if(ing2.getPeso()>ing1.getPeso()){
+                        } else {
+                            if (ing1.getPeso() > lTripulante.get(i).getPeso()) {
+                                if (ing2.getPeso() > ing1.getPeso()) {
                                     ing2 = ing1;
                                 }
                                 ing1 = lTripulante.get(i);
@@ -320,16 +320,16 @@ public class ControlJuego {
                     break;
             }
         }
-        if(comand != null){
+        if (comand != null) {
             lEmbarcados.add(comand);
         }
-        if(pilo != null){
+        if (pilo != null) {
             lEmbarcados.add(pilo);
         }
-        if(ing1 != null){
+        if (ing1 != null) {
             lEmbarcados.add(ing1);
         }
-        if(ing2 != null){
+        if (ing2 != null) {
             lEmbarcados.add(ing2);
         }
 
@@ -340,8 +340,8 @@ public class ControlJuego {
         List<Tripulante> lEmbarcados = new ArrayList<>();
         Tripulante comand = null, pilo = null, cient1 = null, cient2 = null, cient3 = null;
 
-        for(int i = 0; i < lTripulante.size(); i++){
-            switch (lTripulante.get(i).getTipo()){
+        for (int i = 0; i < lTripulante.size(); i++) {
+            switch (lTripulante.get(i).getTipo()) {
                 case COMANDANTE:
                     comand = case1Tripulante(comand, lTripulante.get(i));
                     break;
@@ -349,22 +349,22 @@ public class ControlJuego {
                     pilo = case1Tripulante(pilo, lTripulante.get(i));
                     break;
                 case CIENTIFICO:
-                    if(cient1 == null){
+                    if (cient1 == null) {
                         cient1 = lTripulante.get(i);
-                    }else{
-                        if(cient2 == null) {
+                    } else {
+                        if (cient2 == null) {
                             cient2 = lTripulante.get(i);
-                        }else{
-                            if(cient3 == null){
+                        } else {
+                            if (cient3 == null) {
                                 cient3 = lTripulante.get(i);
-                            }else{
-                                if(cient1.getPeso()>lTripulante.get(i).getPeso()){
-                                    if(cient2.getPeso()>cient1.getPeso()){
-                                        if (cient3.getPeso()>cient2.getPeso()) {
+                            } else {
+                                if (cient1.getPeso() > lTripulante.get(i).getPeso()) {
+                                    if (cient2.getPeso() > cient1.getPeso()) {
+                                        if (cient3.getPeso() > cient2.getPeso()) {
                                             cient3 = cient2;
                                         }
                                         cient2 = cient1;
-                                    } else if(cient3.getPeso()>cient1.getPeso()) {
+                                    } else if (cient3.getPeso() > cient1.getPeso()) {
                                         cient3 = cient1;
                                     }
                                     cient1 = lTripulante.get(i);
@@ -375,19 +375,19 @@ public class ControlJuego {
                     break;
             }
         }
-        if(comand != null){
+        if (comand != null) {
             lEmbarcados.add(comand);
         }
-        if(pilo != null){
+        if (pilo != null) {
             lEmbarcados.add(pilo);
         }
-        if(cient1 != null){
+        if (cient1 != null) {
             lEmbarcados.add(cient1);
         }
-        if(cient2 != null){
+        if (cient2 != null) {
             lEmbarcados.add(cient2);
         }
-        if(cient3 != null){
+        if (cient3 != null) {
             lEmbarcados.add(cient3);
         }
 
@@ -398,25 +398,25 @@ public class ControlJuego {
         List<Tripulante> lEmbarcados = new ArrayList<>();
         Tripulante droid1 = null, droid2 = null, droid3 = null;
 
-        for(int i = 0; i < lTripulante.size(); i++){
-            switch (lTripulante.get(i).getTipo()){
+        for (int i = 0; i < lTripulante.size(); i++) {
+            switch (lTripulante.get(i).getTipo()) {
                 case DROIDE:
-                    if(droid1 == null){
+                    if (droid1 == null) {
                         droid1 = lTripulante.get(i);
-                    }else{
-                        if(droid2 == null) {
+                    } else {
+                        if (droid2 == null) {
                             droid2 = lTripulante.get(i);
-                        }else{
-                            if(droid3 == null){
+                        } else {
+                            if (droid3 == null) {
                                 droid3 = lTripulante.get(i);
-                            }else{
-                                if(droid1.getPeso()>lTripulante.get(i).getPeso()){
-                                    if(droid2.getPeso()>droid1.getPeso()){
-                                        if (droid3.getPeso()>droid2.getPeso()) {
+                            } else {
+                                if (droid1.getPeso() > lTripulante.get(i).getPeso()) {
+                                    if (droid2.getPeso() > droid1.getPeso()) {
+                                        if (droid3.getPeso() > droid2.getPeso()) {
                                             droid3 = droid2;
                                         }
                                         droid2 = droid1;
-                                    } else if(droid3.getPeso()>droid1.getPeso()) {
+                                    } else if (droid3.getPeso() > droid1.getPeso()) {
                                         droid3 = droid1;
                                     }
                                     droid1 = lTripulante.get(i);
@@ -427,24 +427,24 @@ public class ControlJuego {
                     break;
             }
         }
-        if(droid1 != null){
+        if (droid1 != null) {
             lEmbarcados.add(droid1);
         }
-        if(droid2 != null){
+        if (droid2 != null) {
             lEmbarcados.add(droid2);
         }
-        if(droid3 != null){
+        if (droid3 != null) {
             lEmbarcados.add(droid3);
         }
 
         return lEmbarcados;
     }
 
-    public Tripulante case1Tripulante(Tripulante trip, Tripulante aux){
-        if(trip == null){
+    public Tripulante case1Tripulante(Tripulante trip, Tripulante aux) {
+        if (trip == null) {
             trip = aux;
-        }else{
-            if(trip.getPeso()>aux.getPeso()){
+        } else {
+            if (trip.getPeso() > aux.getPeso()) {
                 trip = aux;
             }
         }
@@ -452,10 +452,10 @@ public class ControlJuego {
         return trip;
     }
 
-    public void mostrarEmbarcados(Nave nave, List<Tripulante> lEmbarcados, ObjectId id){
-        if(lEmbarcados.size() != nave.getCapacidad()){
+    public void mostrarEmbarcados(Nave nave, List<Tripulante> lEmbarcados, ObjectId id) {
+        if (lEmbarcados.size() != nave.getCapacidad()) {
             System.out.println("No hay personal suficiente");
-        }else {
+        } else {
             agendaLanzamientoRepository.aniadirTripulacion(id, devolverIdsEmbarcados(lEmbarcados));
             System.out.println("Tripulacion embarcada en la nave " + nave.getNombre() + " (" + nave.getTipo() + "): ");
             for (int i = 0; i < lEmbarcados.size(); i++) {
@@ -471,8 +471,8 @@ public class ControlJuego {
         double combustible = 0, pesoTripu = 0, pesoCarga = 0;
         establecerModificador(nave);
 
-        if(aG != null) {
-            if(aG.getTripulacionIds() != null) {
+        if (aG != null) {
+            if (aG.getTripulacionIds() != null) {
                 switch (nave.getTipo()) {
                     case EXPLORACION:
                         pesoCarga = calcularPesoCarga(nave);
@@ -490,16 +490,16 @@ public class ControlJuego {
                         cargarSuministros(nave, aG, pesoCarga);
                         break;
                 }
-            }else{
+            } else {
                 System.out.println("No hay tripulacion asignada al lanzamiento");
             }
-        }else{
+        } else {
             System.out.println("Aun no se ha planificado un lanzamiento");
         }
         System.out.println();
     }
 
-    public double calcularPesoCarga(Nave nave){
+    public double calcularPesoCarga(Nave nave) {
         double pesoCarga = 0;
 
         switch (nave.getTipo()) {
@@ -539,11 +539,11 @@ public class ControlJuego {
         return peso;
     }
 
-    public void cargarSuministros(Nave nave, AgendaLanzamientos aG, double pesoCarga){
+    public void cargarSuministros(Nave nave, AgendaLanzamientos aG, double pesoCarga) {
         double oxigeno = 0, combustible = 0, pesoTripu = 0;
         boolean exploracion = false;
 
-        if(nave.getTipo() == TipoNave.EXPLORACION){
+        if (nave.getTipo() == TipoNave.EXPLORACION) {
             exploracion = true;
         }
 
@@ -551,9 +551,9 @@ public class ControlJuego {
 
         combustible = calcularCombustible(nave, pesoCarga, pesoTripu, aG);
 
-        if(exploracion){
+        if (exploracion) {
             oxigeno = 0;
-        }else {
+        } else {
             oxigeno = calcularOxigeno(aG);
         }
 
@@ -571,39 +571,39 @@ public class ControlJuego {
             lanzaderaRepository.updateOxigeno(lanzSelect.getId(), lanzSelect.getOxigenoDisponible());
             System.out.println("Los suministros han sido cargados con exito");
         } else {
-            if(exploracion){
+            if (exploracion) {
                 System.out.println("No hay suficiente combustible en la lanzadera");
-            }else {
+            } else {
                 System.out.println("No hay suficiente combustible u oxigeno en la lanzadera");
             }
         }
     }
 
-    public double calcularCombustible(Nave nave, double pesoCarga, double pesoTripu, AgendaLanzamientos aG){
-        if(nave.getTipo() == TipoNave.EXPLORACION) {
+    public double calcularCombustible(Nave nave, double pesoCarga, double pesoTripu, AgendaLanzamientos aG) {
+        if (nave.getTipo() == TipoNave.EXPLORACION) {
             return (pesoCarga + pesoTripu) * nave.getModificador() * (calcularPlanVuelo(aG));
-        }else{
+        } else {
             return (pesoCarga + pesoTripu) * nave.getModificador() * (calcularPlanVuelo(aG) * 2);
         }
     }
 
-    public double calcularOxigeno(AgendaLanzamientos aG){
+    public double calcularOxigeno(AgendaLanzamientos aG) {
         return aG.getTripulacionIds().size() * (calcularPlanVuelo(aG) * 2) * 3;
     }
 
     public void cargarSuministrosLanzadera() {
-        if(Objects.equals(lanzSelect.getOxigenoDisponible(), lanzSelect.getCapacidadMaximaOxigeno())){
+        if (Objects.equals(lanzSelect.getOxigenoDisponible(), lanzSelect.getCapacidadMaximaOxigeno())) {
             System.out.println("El oxigeno se encuentra cargado");
-        }else{
-            System.out.println("Se ha recargado "+(lanzSelect.getCapacidadMaximaOxigeno()-lanzSelect.getOxigenoDisponible())+" de oxigeno");
+        } else {
+            System.out.println("Se ha recargado " + (lanzSelect.getCapacidadMaximaOxigeno() - lanzSelect.getOxigenoDisponible()) + " de oxigeno");
             lanzSelect.setOxigenoDisponible(lanzSelect.getCapacidadMaximaOxigeno());
             lanzaderaRepository.updateOxigeno(lanzSelect.getId(), lanzSelect.getCapacidadMaximaOxigeno());
         }
 
-        if(Objects.equals(lanzSelect.getCombustibleDisponible(), lanzSelect.getCapacidadMaximaCombustible())){
+        if (Objects.equals(lanzSelect.getCombustibleDisponible(), lanzSelect.getCapacidadMaximaCombustible())) {
             System.out.println("El combustible se encuentra cargado");
-        }else{
-            System.out.println("Se ha recargado "+(lanzSelect.getCapacidadMaximaCombustible()-lanzSelect.getCombustibleDisponible())+" de combustible");
+        } else {
+            System.out.println("Se ha recargado " + (lanzSelect.getCapacidadMaximaCombustible() - lanzSelect.getCombustibleDisponible()) + " de combustible");
             lanzSelect.setCombustibleDisponible(lanzSelect.getCapacidadMaximaCombustible());
             lanzaderaRepository.updateCombustible(lanzSelect.getId(), lanzSelect.getCapacidadMaximaCombustible());
         }
@@ -617,7 +617,7 @@ public class ControlJuego {
 
             agendaLanzamientoRepository.cambiarEstado(aG.getId(), Estado.CANCELADO);
 
-            desembarcarTripulacion(aG.getTripulacionIds(),aG.getId());
+            desembarcarTripulacion(aG.getTripulacionIds(), aG.getId());
 
             double combustibleSumar = nave.getCombustible() + lanzSelect.getCombustibleDisponible(), oxigenoSumar = nave.getOxigeno() + lanzSelect.getOxigenoDisponible();
 
@@ -631,7 +631,7 @@ public class ControlJuego {
             System.out.println("Fecha prevista: " + aG.getFecha());
             System.out.println("Suministros devueltos a la lanzadera.");
             System.out.println("Tripulacion desembarcada.");
-        }else{
+        } else {
             System.out.println("No hay lanzamientos planificados hasta el momento");
         }
         System.out.println();
@@ -671,17 +671,17 @@ public class ControlJuego {
             }
             if (aG.getTripulacionIds() != null) {
                 System.out.println("Tripulacion desembarcada.");
-            }else{
+            } else {
                 System.out.println("No habia tripulacion embarcada");
             }
             agendaLanzamientoRepository.actualizarFecha(aG.getId(), nuevaFecha);
-        }else{
+        } else {
             System.out.println("No hay lanzamientos planificados hasta el momento");
         }
         System.out.println();
     }
 
-    public void devolverCombustible(double combustibleSumar, ObjectId id){
+    public void devolverCombustible(double combustibleSumar, ObjectId id) {
         if (!(combustibleSumar > lanzSelect.getCapacidadMaximaCombustible())) {
             lanzSelect.setCombustibleDisponible(combustibleSumar);
             lanzaderaRepository.updateCombustible(lanzSelect.getId(), combustibleSumar);
@@ -692,7 +692,7 @@ public class ControlJuego {
         naveRepository.updateCombustible(id, 0);
     }
 
-    public void devolverOxigeno(double oxigenoSumar, ObjectId id){
+    public void devolverOxigeno(double oxigenoSumar, ObjectId id) {
         if (!(oxigenoSumar > lanzSelect.getCapacidadMaximaOxigeno())) {
             lanzSelect.setOxigenoDisponible(oxigenoSumar);
             lanzaderaRepository.updateOxigeno(lanzSelect.getId(), oxigenoSumar);
@@ -703,7 +703,7 @@ public class ControlJuego {
         naveRepository.updateOxigeno(id, 0);
     }
 
-    public void desembarcarTripulacion(List<ObjectId> tripulacionIds, ObjectId id){
+    public void desembarcarTripulacion(List<ObjectId> tripulacionIds, ObjectId id) {
         if (tripulacionIds != null) {
             for (int i = 0; i < tripulacionIds.size(); i++) {
                 Tripulante t1 = tripulanteRepository.recuperarTripulantesPorId(tripulacionIds.get(i));
@@ -716,50 +716,45 @@ public class ControlJuego {
     public void realizarLanzamiento() {
         AgendaLanzamientos aG = agendaLanzamientoRepository.recuperarPorFechaProxima(lanzSelect.getId(), LocalDate.now());
         double pesoCargar, pesoTripu, combustible, oxigeno;
-        if(aG != null){
+        if (aG != null) {
             Nave nave = naveRepository.recuperarNavesPorId(aG.getNaveId());
             establecerModificador(nave);
 
-            if(aG.getTripulacionIds() != null){
-                if(nave.getCombustible() > 0 && nave.getOxigeno() > 0){
-                    if (Objects.equals(aG.getFecha(), LocalDate.now())) {
-                        agendaLanzamientoRepository.cambiarEstado(aG.getId(), Estado.LANZADO);
-                        naveRepository.updateCombustible(nave.getId(), 0);
-                        naveRepository.updateOxigeno(nave.getId(), 0);
+            if (aG.getTripulacionIds() != null) {
+                if (nave.getCombustible() > 0 && nave.getOxigeno() > 0) {
+                    agendaLanzamientoRepository.cambiarEstado(aG.getId(), Estado.LANZADO);
+                    naveRepository.updateCombustible(nave.getId(), 0);
+                    naveRepository.updateOxigeno(nave.getId(), 0);
 
-                        cEscritura.insertarInfo(lanzSelect.getNombre(), nave.getNombre(), Estado.LANZADO, aG.getFecha(), 0);
-                        System.out.println("Lanzamiento realizado: ");
-                        System.out.println("Fecha de lanzamiento: " + aG.getFecha());
-                        System.out.println("nave: "+nave.getNombre());
-                        System.out.println("Tipo: "+nave.getTipo());
-                        System.out.println("Tripulacion: "+aG.getTripulacionIds().size()+" miembros");
-                        System.out.println("Combustible: "+nave.getCombustible());
-                        System.out.println("Oxigeno: "+nave.getOxigeno());
+                    cEscritura.insertarInfo(lanzSelect.getNombre(), nave.getNombre(), Estado.LANZADO, aG.getFecha(), 0);
+                    System.out.println("Lanzamiento realizado: ");
+                    System.out.println("Fecha de lanzamiento: " + aG.getFecha());
+                    System.out.println("nave: " + nave.getNombre());
+                    System.out.println("Tipo: " + nave.getTipo());
+                    System.out.println("Tripulacion: " + aG.getTripulacionIds().size() + " miembros");
+                    System.out.println("Combustible: " + nave.getCombustible());
+                    System.out.println("Oxigeno: " + nave.getOxigeno());
 
-                        desembarcarTripulacion(aG.getTripulacionIds(), aG.getId());
-                    }else{
-                        System.out.println("No se puede lanzar la nave "+nave.getNombre());
-                        System.out.println("No es el dia previsto del lanzamiento ("+aG.getFecha()+")");
-                    }
-                }else{
+                    desembarcarTripulacion(aG.getTripulacionIds(), aG.getId());
+                } else {
                     pesoCargar = calcularPesoCarga(nave);
                     pesoTripu = calcularPesoTripu(aG);
                     combustible = calcularCombustible(nave, pesoCargar, pesoTripu, aG);
 
-                    if(nave.getTipo() == TipoNave.EXPLORACION){
+                    if (nave.getTipo() == TipoNave.EXPLORACION) {
                         oxigeno = 0;
-                    }else{
+                    } else {
                         oxigeno = calcularOxigeno(aG);
                     }
 
-                    System.out.println("No se puede lanzar la nave "+nave.getNombre()+ " porque no tiene suficientes suministros");
-                    System.out.println("Combustible: "+nave.getCombustible()+" / "+combustible);
-                    System.out.println("Oxigeno: "+nave.getOxigeno()+" / "+oxigeno);
+                    System.out.println("No se puede lanzar la nave " + nave.getNombre() + " porque no tiene suficientes suministros");
+                    System.out.println("Combustible: " + nave.getCombustible() + " / " + combustible);
+                    System.out.println("Oxigeno: " + nave.getOxigeno() + " / " + oxigeno);
                 }
-            }else{
-                System.out.println("No se puede lanzar la nave "+nave.getNombre()+ " porque no hay tripulacion");
+            } else {
+                System.out.println("No se puede lanzar la nave " + nave.getNombre() + " porque no hay tripulacion");
             }
-        }else{
+        } else {
             System.out.println("No hay lanzamientos previstos hasta le fecha");
         }
         System.out.println();
