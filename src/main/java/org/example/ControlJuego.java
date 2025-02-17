@@ -221,16 +221,15 @@ public class ControlJuego {
                     System.out.println("    Duracion de la mision: " + (calcularPlanVuelo(aG) * 2) + " dias");
                     break;
             }
-            if (aG.getTripulacionIds() == null) {
-                System.out.println("    No hay tripulacion asignada");
-            } else {
-                if (!aG.getTripulacionIds().isEmpty()) {
-                    System.out.println("    Tripulacion Asignada: ");
-                    for (int i = 0; i < aG.getTripulacionIds().size(); i++) {
-                        Tripulante t1 = tripulanteRepository.recuperarTripulantesPorId(aG.getTripulacionIds().get(i));
-                        System.out.println("        - " + t1.getNombre() + " (" + t1.getTipo() + ")");
-                    }
+            if (aG.getTripulacionIds() != null && !aG.getTripulacionIds().isEmpty()) {
+                System.out.println("    Tripulacion Asignada: ");
+                for (int i = 0; i < aG.getTripulacionIds().size(); i++) {
+                    Tripulante t1 = tripulanteRepository.recuperarTripulantesPorId(aG.getTripulacionIds().get(i));
+                    System.out.println("        - " + t1.getNombre() + " (" + t1.getTipo() + ")");
                 }
+            } else {
+
+                System.out.println("    No hay tripulacion asignada");
             }
         } else {
             System.out.println("No se han añadido lanzamientos hasta el momento");
@@ -472,7 +471,7 @@ public class ControlJuego {
         establecerModificador(nave);
 
         if (aG != null) {
-            if (aG.getTripulacionIds() != null) {
+            if (aG.getTripulacionIds() != null && !aG.getTripulacionIds().isEmpty()) {
                 switch (nave.getTipo()) {
                     case EXPLORACION:
                         pesoCarga = calcularPesoCarga(nave);
@@ -669,7 +668,7 @@ public class ControlJuego {
             } else {
                 System.out.println("No se habian cargado suministros");
             }
-            if (aG.getTripulacionIds() != null) {
+            if (aG.getTripulacionIds() != null && !aG.getTripulacionIds().isEmpty()) {
                 System.out.println("Tripulacion desembarcada.");
             } else {
                 System.out.println("No habia tripulacion embarcada");
@@ -720,7 +719,7 @@ public class ControlJuego {
             Nave nave = naveRepository.recuperarNavesPorId(aG.getNaveId());
             establecerModificador(nave);
 
-            if (aG.getTripulacionIds() != null) {
+            if (aG.getTripulacionIds() != null && !aG.getTripulacionIds().isEmpty()) {
                 if (nave.getCombustible() > 0 && nave.getOxigeno() > 0) {
                     agendaLanzamientoRepository.cambiarEstado(aG.getId(), Estado.LANZADO);
                     naveRepository.updateCombustible(nave.getId(), 0);
