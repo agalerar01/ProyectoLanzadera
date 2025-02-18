@@ -103,7 +103,7 @@ public class ControlEscritura {
                 infoNueva.appendChild(fecha);
 
                 Element fechaNueva = doc.createElement("fecha_nueva");
-                fechaNueva.setTextContent(fechaLanzamiento.plusMonths(cont).toString());
+                fechaNueva.setTextContent(fechaLanzamiento.plusMonths(1).plusDays(cont).toString());
                 infoNueva.appendChild(fechaNueva);
             } else {
                 Element fecha = doc.createElement("fecha");

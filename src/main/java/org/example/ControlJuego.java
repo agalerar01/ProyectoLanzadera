@@ -653,10 +653,12 @@ public class ControlJuego {
 
             devolverOxigeno(oxigenoSumar, nave.getId());
 
-            do {
+
                 nuevaFecha = nuevaFecha.plusMonths(1);
+            while (!comprobarVentana(nuevaFecha)){
+                nuevaFecha = nuevaFecha.plusDays(1);
                 cont++;
-            } while (!comprobarVentana(nuevaFecha));
+            }
 
             cEscritura.insertarInfo(lanzSelect.getNombre(), nave.getNombre(), Estado.APLAZADO, aG.getFecha(), cont);
             System.out.println("Lanzamiento pospuesto: ");
